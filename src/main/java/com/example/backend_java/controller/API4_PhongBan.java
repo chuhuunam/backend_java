@@ -36,11 +36,11 @@ public class API4_PhongBan extends _BaseController {
             @ApiParam(value = "Trang cần lấy (tính từ 1). Mặc định 1") Integer pageIndex,
             @RequestParam(required = false, name = "page_size")
             @ApiParam(value = "Số bản ghi cho 1 trang (nhỏ nhất 1; lớn nhất 50). Mặc định 10") Integer pageSize,
-            @RequestParam(required = false, name = "name")
-            @ApiParam(value = "Nhập tên phòng ban") String tenPhongBan) {
+            @RequestParam(required = false, name = "keyword")
+            @ApiParam(value = "Nhập keyword") String keyword) {
         Integer index = validPageIndex(pageIndex);
         Integer size = validPageSize(pageSize);
-        return phongBanService.getPage(index, size,tenPhongBan);
+        return phongBanService.getPage(index, size,keyword);
     }
 
     @PostMapping("")

@@ -16,5 +16,5 @@ public interface PhongBanService {
 
     ResponseEntity<?> deleteDepartment(Long id);
 
-    ResponseEntity<?> getPage(Integer pageIndex, Integer pageSize, String name);
+    ResponseEntity<?> getPage(Integer pageIndex, Integer pageSize, String keyword);
 }

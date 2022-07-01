@@ -1,14 +1,14 @@
 package com.example.backend_java.service.Impl;
 
 import com.example.backend_java.constant.Constant;
-import com.example.backend_java.domain.dto.PhongBanDto;
-import com.example.backend_java.domain.entity.PhongBanEntity;
+import com.example.backend_java.domain.dto.LoaiHopDongDto;
+import com.example.backend_java.domain.entity.LoaiHopDongEntity;
 import com.example.backend_java.domain.entity.UserEntity;
-import com.example.backend_java.domain.request.PhongBanRequest;
+import com.example.backend_java.domain.request.LoaiHopDongRequest;
 import com.example.backend_java.domain.response.PageResponse;
 import com.example.backend_java.domain.response.ResponseResponse;
-import com.example.backend_java.repository.PhongBanRepository;
-import com.example.backend_java.service.PhongBanService;
+import com.example.backend_java.repository.LoaiHopDongRepository;
+import com.example.backend_java.service.LoaiHopDongService;
 import com.example.backend_java.utils.JwtUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,23 +22,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class PhongBanServiceImpl implements PhongBanService {
+public class LoaiHopDongServiceImpl implements LoaiHopDongService {
 
-    private final PhongBanRepository phongBanRepository;
+    private final LoaiHopDongRepository loaiHopDongRepository;
     private final JwtUtils jwtUtils;
 
-    public PhongBanServiceImpl(PhongBanRepository phongBanRepository, JwtUtils jwtUtils) {
-        this.phongBanRepository = phongBanRepository;
+    public LoaiHopDongServiceImpl(LoaiHopDongRepository loaiHopDongRepository, JwtUtils jwtUtils) {
+        this.loaiHopDongRepository = loaiHopDongRepository;
         this.jwtUtils = jwtUtils;
     }
 
-
     @Override
     public ResponseEntity<?> getAll() {
-        List<PhongBanEntity> list = phongBanRepository.findAll();
-        ArrayList<PhongBanDto> getAll = new ArrayList<>();
-        for (PhongBanEntity entity : list) {
-            PhongBanDto r = new PhongBanDto();
+        List<LoaiHopDongEntity> list = loaiHopDongRepository.findAll();
+        ArrayList<LoaiHopDongDto> getAll = new ArrayList<>();
+        for (LoaiHopDongEntity entity : list) {
+            LoaiHopDongDto r = new LoaiHopDongDto();
             r.fromEntity(entity);
             getAll.add(r);
         }
@@ -46,16 +45,16 @@ public class PhongBanServiceImpl implements PhongBanService {
     }
 
     @Override
-    public ResponseEntity<?> createDepartment(HttpServletRequest httpServletRequest, PhongBanRequest request) {
+    public ResponseEntity<?> createTypeContract(HttpServletRequest request, LoaiHopDongRequest req) {
         try {
-            UserEntity userEntity = jwtUtils.getUserEntity(httpServletRequest);
-            PhongBanEntity entity = new PhongBanEntity();
-            entity.setMaPhongBan(request.getMaPhongBan());
-            entity.setTenPhongBan(request.getTenPhongBan());
-            entity.setMoTa(request.getMoTa());
-            entity.setStatus(request.getStatus());
+            UserEntity userEntity = jwtUtils.getUserEntity(request);
+            LoaiHopDongEntity entity = new LoaiHopDongEntity();
+            entity.setTenHopDong(req.getTenHopDong());
+            entity.setLoaiHopDong(req.getLoaiHopDong());
+            entity.setBaoHiem(req.getBaoHiem());
+            entity.setStatus(req.getStatus());
             entity.setNguoiTao(userEntity.getHoTen());
-            phongBanRepository.save(entity);
+            loaiHopDongRepository.save(entity);
             return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Thêm thành công"));
 
         } catch (Exception e) {
@@ -64,19 +63,19 @@ public class PhongBanServiceImpl implements PhongBanService {
     }
 
     @Override
-    public ResponseEntity<?> updateDepartment(HttpServletRequest request, PhongBanRequest department, Long id) {
+    public ResponseEntity<?> updateTypeContract(HttpServletRequest request, LoaiHopDongRequest req, Long id) {
         try {
             UserEntity userEntity = jwtUtils.getUserEntity(request);
-            PhongBanEntity entity = phongBanRepository.findById(id).orElse(null) ;
+            LoaiHopDongEntity entity = loaiHopDongRepository.findById(id).orElse(null) ;
             if (entity == null) {
                 return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
             }
-            entity.setMaPhongBan(department.getMaPhongBan());
-            entity.setTenPhongBan(department.getTenPhongBan());
-            entity.setMoTa(department.getMoTa());
-            entity.setStatus(department.getStatus());
+            entity.setTenHopDong(req.getTenHopDong());
+            entity.setLoaiHopDong(req.getLoaiHopDong());
+            entity.setBaoHiem(req.getBaoHiem());
+            entity.setStatus(req.getStatus());
             entity.setNguoiSua(userEntity.getHoTen());
-            phongBanRepository.save(entity);
+            loaiHopDongRepository.save(entity);
             return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Sửa thành công"));
         } catch (Throwable ex) {
             return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "System busy"));
@@ -84,13 +83,13 @@ public class PhongBanServiceImpl implements PhongBanService {
     }
 
     @Override
-    public ResponseEntity<?> deleteDepartment(Long id) {
+    public ResponseEntity<?> deleteTypeContract(Long id) {
         try {
-            PhongBanEntity entity = phongBanRepository.findById(id).orElse(null) ;
+            LoaiHopDongEntity entity = loaiHopDongRepository.findById(id).orElse(null) ;
             if (entity == null) {
                 return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
             }
-            phongBanRepository.delete(entity);
+            loaiHopDongRepository.delete(entity);
             return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Xóa thành công"));
         } catch (Throwable ex) {
             return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "System busy"));
@@ -98,23 +97,17 @@ public class PhongBanServiceImpl implements PhongBanService {
     }
 
     @Override
-    public ResponseEntity<?> getPage(Integer index, Integer size, String keyword) {
-        Page<PhongBanEntity> page;
+    public ResponseEntity<?> getPage(Integer index, Integer size, String tenHopDong, String loaiHopDong, Integer baoHiem) {
+        Page<LoaiHopDongEntity> page;
         Pageable pageable = PageRequest.of(index - 1, size, Sort.by("id").descending());
-        if (keyword == null){
-            page = phongBanRepository.findAll(pageable);
-        }
-        else {
-            page = phongBanRepository.findAll(keyword,pageable);
-        }
-        ArrayList<PhongBanDto> list = new ArrayList<>();
-        for (PhongBanEntity entity : page.getContent()) {
-            PhongBanDto r = new PhongBanDto();
+            page = loaiHopDongRepository.search(tenHopDong,loaiHopDong,baoHiem,pageable);
+        ArrayList<LoaiHopDongDto> list = new ArrayList<>();
+        for (LoaiHopDongEntity entity : page.getContent()) {
+            LoaiHopDongDto r = new LoaiHopDongDto();
             r.fromEntity(entity);
             list.add(r);
         }
-        PageResponse<PhongBanDto> data = new PageResponse(index, size, page.getTotalElements(), list);
-
+        PageResponse<LoaiHopDongDto> data = new PageResponse(index, size, page.getTotalElements(), list);
         return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, data));
     }
 }

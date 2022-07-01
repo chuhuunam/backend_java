@@ -9,7 +9,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PhongBanRepository extends JpaRepository<PhongBanEntity,Long> {
-
-    @Query(nativeQuery = true, value = "SELECT * FROM phong_ban WHERE ten_phong_ban LIKE %:tenPhongBan%")
-    Page<PhongBanEntity> findAll(String tenPhongBan, Pageable pageable);
+    @Query(nativeQuery = true, value = "SELECT * FROM phong_ban WHERE " +
+            "CONCAT(phong_ban.ten_phong_ban,'',phong_ban.ma_phong_ban,'',phong_ban.mo_ta,'' )" +
+            "LIKE %?1%")
+    Page<PhongBanEntity> findAll(String keyword, Pageable pageable);
 }

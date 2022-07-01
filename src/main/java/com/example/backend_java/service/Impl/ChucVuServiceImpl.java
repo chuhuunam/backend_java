@@ -1,14 +1,14 @@
 package com.example.backend_java.service.Impl;
 
 import com.example.backend_java.constant.Constant;
-import com.example.backend_java.domain.dto.PhongBanDto;
-import com.example.backend_java.domain.entity.PhongBanEntity;
+import com.example.backend_java.domain.dto.ChucVuDto;
+import com.example.backend_java.domain.entity.ChucVuEntity;
 import com.example.backend_java.domain.entity.UserEntity;
-import com.example.backend_java.domain.request.PhongBanRequest;
+import com.example.backend_java.domain.request.ChucVuRequest;
 import com.example.backend_java.domain.response.PageResponse;
 import com.example.backend_java.domain.response.ResponseResponse;
-import com.example.backend_java.repository.PhongBanRepository;
-import com.example.backend_java.service.PhongBanService;
+import com.example.backend_java.repository.ChucVuRepository;
+import com.example.backend_java.service.ChucVuService;
 import com.example.backend_java.utils.JwtUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,23 +22,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class PhongBanServiceImpl implements PhongBanService {
+public class ChucVuServiceImpl implements ChucVuService {
 
-    private final PhongBanRepository phongBanRepository;
+    private final ChucVuRepository chucVuRepository;
     private final JwtUtils jwtUtils;
 
-    public PhongBanServiceImpl(PhongBanRepository phongBanRepository, JwtUtils jwtUtils) {
-        this.phongBanRepository = phongBanRepository;
+    public ChucVuServiceImpl(ChucVuRepository chucVuRepository, JwtUtils jwtUtils) {
+        this.chucVuRepository = chucVuRepository;
         this.jwtUtils = jwtUtils;
     }
 
 
     @Override
     public ResponseEntity<?> getAll() {
-        List<PhongBanEntity> list = phongBanRepository.findAll();
-        ArrayList<PhongBanDto> getAll = new ArrayList<>();
-        for (PhongBanEntity entity : list) {
-            PhongBanDto r = new PhongBanDto();
+        List<ChucVuEntity> list = chucVuRepository.findAll();
+        ArrayList<ChucVuDto> getAll = new ArrayList<>();
+        for (ChucVuEntity entity : list) {
+            ChucVuDto r = new ChucVuDto();
             r.fromEntity(entity);
             getAll.add(r);
         }
@@ -46,37 +46,36 @@ public class PhongBanServiceImpl implements PhongBanService {
     }
 
     @Override
-    public ResponseEntity<?> createDepartment(HttpServletRequest httpServletRequest, PhongBanRequest request) {
+    public ResponseEntity<?> createChucVu(HttpServletRequest request, ChucVuRequest position) {
         try {
-            UserEntity userEntity = jwtUtils.getUserEntity(httpServletRequest);
-            PhongBanEntity entity = new PhongBanEntity();
-            entity.setMaPhongBan(request.getMaPhongBan());
-            entity.setTenPhongBan(request.getTenPhongBan());
-            entity.setMoTa(request.getMoTa());
-            entity.setStatus(request.getStatus());
+            UserEntity userEntity = jwtUtils.getUserEntity(request);
+            ChucVuEntity entity = new ChucVuEntity();
+            entity.setMaChucVu(position.getMaChucVu());
+            entity.setTenChucVu(position.getTenChucVu());
+            entity.setMoTa(position.getMoTa());
+            entity.setStatus(position.getStatus());
             entity.setNguoiTao(userEntity.getHoTen());
-            phongBanRepository.save(entity);
+            chucVuRepository.save(entity);
             return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Thêm thành công"));
-
         } catch (Exception e) {
             return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "System busy"));
         }
     }
 
     @Override
-    public ResponseEntity<?> updateDepartment(HttpServletRequest request, PhongBanRequest department, Long id) {
+    public ResponseEntity<?> updateChucVu(HttpServletRequest request, ChucVuRequest position, Long id) {
         try {
             UserEntity userEntity = jwtUtils.getUserEntity(request);
-            PhongBanEntity entity = phongBanRepository.findById(id).orElse(null) ;
+            ChucVuEntity entity = chucVuRepository.findById(id).orElse(null) ;
             if (entity == null) {
                 return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
             }
-            entity.setMaPhongBan(department.getMaPhongBan());
-            entity.setTenPhongBan(department.getTenPhongBan());
-            entity.setMoTa(department.getMoTa());
-            entity.setStatus(department.getStatus());
+            entity.setMaChucVu(position.getMaChucVu());
+            entity.setTenChucVu(position.getTenChucVu());
+            entity.setMoTa(position.getMoTa());
+            entity.setStatus(position.getStatus());
             entity.setNguoiSua(userEntity.getHoTen());
-            phongBanRepository.save(entity);
+            chucVuRepository.save(entity);
             return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Sửa thành công"));
         } catch (Throwable ex) {
             return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "System busy"));
@@ -84,37 +83,35 @@ public class PhongBanServiceImpl implements PhongBanService {
     }
 
     @Override
-    public ResponseEntity<?> deleteDepartment(Long id) {
+    public ResponseEntity<?> deleteChucVu(Long id) {
         try {
-            PhongBanEntity entity = phongBanRepository.findById(id).orElse(null) ;
+            ChucVuEntity entity = chucVuRepository.findById(id).orElse(null) ;
             if (entity == null) {
                 return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
             }
-            phongBanRepository.delete(entity);
+            chucVuRepository.delete(entity);
             return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Xóa thành công"));
         } catch (Throwable ex) {
             return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "System busy"));
         }
     }
-
     @Override
     public ResponseEntity<?> getPage(Integer index, Integer size, String keyword) {
-        Page<PhongBanEntity> page;
         Pageable pageable = PageRequest.of(index - 1, size, Sort.by("id").descending());
+        Page<ChucVuEntity> page;
         if (keyword == null){
-            page = phongBanRepository.findAll(pageable);
+            page = chucVuRepository.findAll(pageable);
         }
         else {
-            page = phongBanRepository.findAll(keyword,pageable);
+            page = chucVuRepository.findAll(keyword,pageable);
         }
-        ArrayList<PhongBanDto> list = new ArrayList<>();
-        for (PhongBanEntity entity : page.getContent()) {
-            PhongBanDto r = new PhongBanDto();
+        ArrayList<ChucVuDto> list = new ArrayList<ChucVuDto>();
+        for (ChucVuEntity entity : page.getContent()) {
+            ChucVuDto r = new ChucVuDto();
             r.fromEntity(entity);
             list.add(r);
         }
-        PageResponse<PhongBanDto> data = new PageResponse(index, size, page.getTotalElements(), list);
-
+        PageResponse<ChucVuDto> data = new PageResponse(index, size, page.getTotalElements(),list);
         return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, data));
     }
 }
