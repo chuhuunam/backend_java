@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigInteger;
+
 @Repository
 public interface LoaiHopDongRepository extends JpaRepository<LoaiHopDongEntity,Long> {
 
@@ -15,4 +17,7 @@ public interface LoaiHopDongRepository extends JpaRepository<LoaiHopDongEntity,L
             "AND (:loaiHopDong is null or lower(loai_hop_dong.loai_hop_dong) like lower(concat(concat('%', :loaiHopDong),'%')))" +
             "AND (:baoHiem is null or loai_hop_dong.bao_hiem = :baoHiem)")
     Page<LoaiHopDongEntity> search(String tenHopDong,String loaiHopDong,Integer baoHiem, Pageable pageable);
+
+    @Query(nativeQuery = true, value = "SELECT * FROM loai_hop_dong WHERE id LIKE %:id%")
+    LoaiHopDongEntity Name(BigInteger id);
 }

@@ -40,11 +40,6 @@ public class UserEntity {
     @JsonIgnore
     private PhongBanEntity departments;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_chuc_vu") // thông qua khóa ngoại id_position
-    @JsonIgnore
-    private ChucVuEntity positions;
-
     @OneToMany(mappedBy = "nguoidung", cascade = CascadeType.ALL)
     @JsonIgnore
     Collection<HopDongEntity> hopdongs;

@@ -1,6 +1,5 @@
 package com.example.backend_java.utils;
 
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -14,8 +13,8 @@ public class TimeUtil {
 		}
 		return "";
 	}
-	
-	public static String toDDMMyyyy(Timestamp time) {
+
+	public static String toDDMMyyyy(Date time) {
 		try {
 			return time == null ? null : (new SimpleDateFormat("dd/MM/yyyy").format(time));
 		} catch (Exception e) {
@@ -23,5 +22,5 @@ public class TimeUtil {
 		}
 		return "";
 	}
-	
+
 }

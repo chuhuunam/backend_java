@@ -19,6 +19,11 @@ public class HopDongEntity {
     private String maHopDong;
 
     @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_chuc_vu") // thông qua khóa ngoại id_position
+    @JsonIgnore
+    private ChucVuEntity positions;
+
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_loai_hop_dong")
     @JsonIgnore
     private LoaiHopDongEntity loaihopdong;
@@ -30,9 +35,10 @@ public class HopDongEntity {
 
     private Float luong;
     private Date ngayKy;
+    private Date ngayHieuLuc;
     private Date ngayKetThuc;
     private Integer status;
-
+    private String moTa;
     @CreationTimestamp
     protected Date ngayTao;
     @CreationTimestamp
