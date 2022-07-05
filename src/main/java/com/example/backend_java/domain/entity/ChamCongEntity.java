@@ -1,5 +1,6 @@
 package com.example.backend_java.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -14,8 +15,15 @@ public class ChamCongEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_ly_do") // thông qua khóa ngoại id_position
+    @JsonIgnore
+    private LyDoEntity lydos;
 
-
+    private Date gioVao;
+    private Date gioRa;
+    private Integer status;
+    private String lyDo;
     @CreationTimestamp
     protected Date ngayTao;
     @CreationTimestamp

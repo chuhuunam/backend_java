@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/contract")
@@ -28,10 +30,16 @@ public class API8_HopDong extends _BaseController{
             @RequestParam(required = false, name = "page_index")
             @ApiParam(value = "Trang cần lấy (tính từ 1). Mặc định 1") Integer pageIndex,
             @RequestParam(required = false, name = "page_size")
-            @ApiParam(value = "Số bản ghi cho 1 trang (nhỏ nhất 1; lớn nhất 50). Mặc định 10") Integer pageSize) {
+            @ApiParam(value = "Số bản ghi cho 1 trang (nhỏ nhất 1; lớn nhất 50). Mặc định 10") Integer pageSize,
+            @RequestParam(required = false, name = "tenNhanVien")
+            @ApiParam(value = "tên nhân viên") String tenNhanVien,
+            @RequestParam(required = false, name = "maLoaiHopDong")
+            @ApiParam(value = "mã loại hợp đồng") Integer maLoaiHopDong,
+            @RequestParam(required = false, name = "status")
+            @ApiParam(value = "0 là bảo hiểm hết hạn,1 ngược lại") Integer status) {
         Integer index = validPageIndex(pageIndex);
         Integer size = validPageSize(pageSize);
-        return hopDongService.getPage(index, size);
+        return hopDongService.getPage(tenNhanVien,maLoaiHopDong,status,index, size);
     }
 
     @PostMapping("")
@@ -79,4 +87,9 @@ public class API8_HopDong extends _BaseController{
         }
     }
 
+    @GetMapping("/export_file")
+    @ApiOperation(value = "Xuất file")
+    public void exportFile(HttpServletResponse response) throws IOException {
+        hopDongService.exportFile(response);
+    }
 }

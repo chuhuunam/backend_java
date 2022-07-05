@@ -44,6 +44,11 @@ public class UserEntity {
     @JsonIgnore
     Collection<HopDongEntity> hopdongs;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_chuc_vu") // thông qua khóa ngoại id_position
+    @JsonIgnore
+    private ChucVuEntity positions;
+
     private Integer status;
 
     @CreationTimestamp

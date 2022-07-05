@@ -26,7 +26,7 @@ public class ChucVuEntity {
 
     @OneToMany(mappedBy = "positions", cascade = CascadeType.ALL)
     @JsonIgnore
-    Collection<HopDongEntity> hopdongs;
+    Collection<UserEntity> userss;
 
     @CreationTimestamp
     protected Date ngayTao;

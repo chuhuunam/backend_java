@@ -19,11 +19,6 @@ public class HopDongEntity {
     private String maHopDong;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_chuc_vu") // thông qua khóa ngoại id_position
-    @JsonIgnore
-    private ChucVuEntity positions;
-
-    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_loai_hop_dong")
     @JsonIgnore
     private LoaiHopDongEntity loaihopdong;

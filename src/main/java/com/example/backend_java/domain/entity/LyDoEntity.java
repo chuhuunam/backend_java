@@ -1,9 +1,11 @@
 package com.example.backend_java.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Date;
 
 @Entity
@@ -25,4 +27,8 @@ public class LyDoEntity {
     protected Date ngaySua;
     protected String nguoiTao;
     protected String nguoiSua;
+
+    @OneToMany(mappedBy = "lydos", cascade = CascadeType.ALL)
+    @JsonIgnore
+    Collection<ChamCongEntity> chamcong;
 }
