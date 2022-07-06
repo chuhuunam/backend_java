@@ -15,7 +15,8 @@ public class PhongBanRequest {
 
     private String moTa;
     @ApiModelProperty(notes = "Status", example = "1")
-    private Integer status;
+    private boolean status;
+
     public ResponseEntity<?> validate() {
         if(Strings.isNullOrEmpty(maPhongBan)){
             return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chưa nhập mã phòng ban"));
@@ -25,9 +26,6 @@ public class PhongBanRequest {
         }
         if(Strings.isNullOrEmpty(moTa)){
             return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chưa nhập mô tả"));
-        }
-        if(status < 0 && status == null){
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chưa nhập status"));
         }
         return null;
     }

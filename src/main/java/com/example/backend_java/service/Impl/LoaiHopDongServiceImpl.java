@@ -52,7 +52,7 @@ public class LoaiHopDongServiceImpl implements LoaiHopDongService {
             entity.setTenHopDong(req.getTenHopDong());
             entity.setLoaiHopDong(req.getLoaiHopDong());
             entity.setBaoHiem(req.getBaoHiem());
-            entity.setStatus(req.getStatus());
+            entity.setStatus(true);
             entity.setNguoiTao(userEntity.getHoTen());
             loaiHopDongRepository.save(entity);
             return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Thêm thành công"));
@@ -73,7 +73,7 @@ public class LoaiHopDongServiceImpl implements LoaiHopDongService {
             entity.setTenHopDong(req.getTenHopDong());
             entity.setLoaiHopDong(req.getLoaiHopDong());
             entity.setBaoHiem(req.getBaoHiem());
-            entity.setStatus(req.getStatus());
+            entity.setStatus(req.isStatus());
             entity.setNguoiSua(userEntity.getHoTen());
             loaiHopDongRepository.save(entity);
             return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Sửa thành công"));

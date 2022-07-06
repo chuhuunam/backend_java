@@ -2,6 +2,7 @@ package com.example.backend_java.domain.request;
 
 import com.example.backend_java.constant.Constant;
 import com.example.backend_java.domain.response.ResponseResponse;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.http.ResponseEntity;
 
@@ -16,7 +17,8 @@ public class HopDongRequest {
     private Date ngayKy;
     private Date ngayHieuLuc;
     private Date ngayKetThuc;
-    private Integer status;
+    @ApiModelProperty(notes = "Status", example = "1")
+    private boolean status;
     private String moTa;
 
     public ResponseEntity<?> validate() {
@@ -37,9 +39,6 @@ public class HopDongRequest {
         }
         if(ngayKy == null){
             return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chưa nhập ngày ký "));
-        }
-        if(status < 0 && status == null){
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chưa nhập status"));
         }
         return null;
     }

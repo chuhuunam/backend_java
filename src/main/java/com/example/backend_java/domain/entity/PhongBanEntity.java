@@ -22,7 +22,7 @@ public class PhongBanEntity {
 
     private String moTa;
 
-    private Integer status;
+    private boolean status;
 
     @OneToMany(mappedBy = "departments", cascade = CascadeType.ALL)
     @JsonIgnore

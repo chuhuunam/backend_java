@@ -21,7 +21,7 @@ public class RoleEntity {
     @Column(length = 500)
     private String moTa;
 
-    private Integer status;
+    private boolean status;
 
     @CreationTimestamp
     protected Date ngayTao;

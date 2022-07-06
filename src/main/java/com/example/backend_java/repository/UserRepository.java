@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
     UserEntity findByTaiKhoan(String taiKhoan);
-    UserEntity findByTaiKhoanAndStatus(String taiKhoan,Integer Status);
+    UserEntity findByTaiKhoanAndStatus(String taiKhoan,boolean Status);
 }

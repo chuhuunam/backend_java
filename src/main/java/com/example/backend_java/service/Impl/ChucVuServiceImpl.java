@@ -53,7 +53,7 @@ public class ChucVuServiceImpl implements ChucVuService {
             entity.setMaChucVu(position.getMaChucVu());
             entity.setTenChucVu(position.getTenChucVu());
             entity.setMoTa(position.getMoTa());
-            entity.setStatus(position.getStatus());
+            entity.setStatus(true);
             entity.setNguoiTao(userEntity.getHoTen());
             chucVuRepository.save(entity);
             return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Thêm thành công"));
@@ -73,7 +73,7 @@ public class ChucVuServiceImpl implements ChucVuService {
             entity.setMaChucVu(position.getMaChucVu());
             entity.setTenChucVu(position.getTenChucVu());
             entity.setMoTa(position.getMoTa());
-            entity.setStatus(position.getStatus());
+            entity.setStatus(position.isStatus());
             entity.setNguoiSua(userEntity.getHoTen());
             chucVuRepository.save(entity);
             return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Sửa thành công"));

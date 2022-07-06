@@ -18,11 +18,11 @@ public class HopDongDTO {
     private Object ngayKetThuc;
     private Float luong;
     private Object thoiHan;
-    private Integer status;
+    private boolean status;
     private Object moTa;
     private Integer baoHiem;
 
-    public HopDongDTO(Object id, Object hoTen, Object tenHopDong, Object maHopDong, Object tenChucVu, Object tenPhongBan, Object ngayKy, Object ngayHieuLuc, Object ngayKetThuc, Float luong, Object thoiHan, Integer status, Object moTa, Integer baoHiem) {
+    public HopDongDTO(Object id, Object hoTen, Object tenHopDong, Object maHopDong, Object tenChucVu, Object tenPhongBan, Object ngayKy, Object ngayHieuLuc, Object ngayKetThuc, Float luong, Object thoiHan, boolean status, Object moTa, Integer baoHiem) {
         this.id = id;
         this.hoTen = hoTen;
         this.tenHopDong = tenHopDong;

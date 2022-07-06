@@ -41,7 +41,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ResponseEntity<?> login(HttpServletResponse request, LoginRequest login) {
         try {
-            UserEntity entity = userRepository.findByTaiKhoanAndStatus(login.getTaiKhoan(),1);
+            UserEntity entity = userRepository.findByTaiKhoanAndStatus(login.getTaiKhoan(),true);
             if (entity == null){
                 return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Tài khoản bị khóa"));
             }else {
@@ -56,7 +56,6 @@ public class AuthServiceImpl implements AuthService {
                 // phân quyền
                 List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
                         .collect(Collectors.toList());
-
                 TokenEntity tokenEntity = new TokenEntity();
                 tokenEntity.setTaiKhoan(login.getTaiKhoan());
                 tokenEntity.setToken(jwtUtils.generateJwtToken(userDetails));

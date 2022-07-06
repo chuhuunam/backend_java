@@ -44,13 +44,13 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public ResponseEntity<?> createRole(HttpServletRequest request, RoleRequest role) {
         try {
-//            UserEntity userEntity = jwtUtils.getUserEntity(request);
+            UserEntity userEntity = jwtUtils.getUserEntity(request);
             RoleEntity entity = new RoleEntity();
             entity.setMaQuyen(role.getMaQuyen());
             entity.setTenQuyen(role.getTenQuyen());
             entity.setMoTa(role.getMoTa());
-            entity.setStatus(role.getStatus());
-//            entity.setNguoiTao(userEntity.getHoTen());
+            entity.setStatus(true);
+            entity.setNguoiTao(userEntity.getHoTen());
             roleRepository.save(entity);
             return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Thêm thành công"));
         } catch (Exception e) {
@@ -69,7 +69,7 @@ public class RoleServiceImpl implements RoleService {
             entity.setMaQuyen(role.getMaQuyen());
             entity.setTenQuyen(role.getTenQuyen());
             entity.setMoTa(role.getMoTa());
-            entity.setStatus(role.getStatus());
+            entity.setStatus(role.isStatus());
             entity.setNguoiSua(userEntity.getHoTen());
             roleRepository.save(entity);
             return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Sửa thành công"));

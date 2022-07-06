@@ -53,7 +53,7 @@ public class PhongBanServiceImpl implements PhongBanService {
             entity.setMaPhongBan(request.getMaPhongBan());
             entity.setTenPhongBan(request.getTenPhongBan());
             entity.setMoTa(request.getMoTa());
-            entity.setStatus(request.getStatus());
+            entity.setStatus(true);
             entity.setNguoiTao(userEntity.getHoTen());
             phongBanRepository.save(entity);
             return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Thêm thành công"));
@@ -74,7 +74,7 @@ public class PhongBanServiceImpl implements PhongBanService {
             entity.setMaPhongBan(department.getMaPhongBan());
             entity.setTenPhongBan(department.getTenPhongBan());
             entity.setMoTa(department.getMoTa());
-            entity.setStatus(department.getStatus());
+            entity.setStatus(department.isStatus());
             entity.setNguoiSua(userEntity.getHoTen());
             phongBanRepository.save(entity);
             return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Sửa thành công"));

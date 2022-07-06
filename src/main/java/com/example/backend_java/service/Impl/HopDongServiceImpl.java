@@ -89,7 +89,7 @@ public class HopDongServiceImpl implements HopDongService {
         for (Object[] entity : page) {
             LoaiHopDongEntity loaihd = loaiHopDongRepository.Name((BigInteger) entity[2]);
             list.add(new HopDongDTO(entity[0],entity[1],loaihd.getTenHopDong(),entity[3],entity[4],entity[5],entity[6],
-                    entity[7],entity[8],(Float) entity[9],entity[10],(Integer) entity[11],entity[12],loaihd.getBaoHiem()));
+                    entity[7],entity[8],(Float) entity[9],entity[10], (Boolean) entity[11],entity[12],loaihd.getBaoHiem()));
         }
         PageResponse<HopDongEntity> data = new PageResponse(index, size, (long) page.size(), list);
         return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, data));
@@ -115,7 +115,7 @@ public class HopDongServiceImpl implements HopDongService {
             entity.setNgayHieuLuc(hopdong.getNgayHieuLuc());
             entity.setNgayKetThuc(hopdong.getNgayKetThuc());
             entity.setLuong(hopdong.getLuong());
-            entity.setStatus(hopdong.getStatus());
+            entity.setStatus(true);
             entity.setMoTa(hopdong.getMoTa());
             entity.setNguoiTao(userEntity.getHoTen());
             hopDongRepository.save(entity);
@@ -140,7 +140,7 @@ public class HopDongServiceImpl implements HopDongService {
             entity.setNgayHieuLuc(req.getNgayHieuLuc());
             entity.setNgayKetThuc(req.getNgayKetThuc());
             entity.setLuong(req.getLuong());
-            entity.setStatus(req.getStatus());
+            entity.setStatus(req.isStatus());
             entity.setMoTa(req.getMoTa());
             entity.setNguoiSua(userEntity.getHoTen());
             hopDongRepository.save(entity);
@@ -169,7 +169,7 @@ public class HopDongServiceImpl implements HopDongService {
         List<HopDongEntity> hopDong = hopDongRepository.checkStatus();
         for (HopDongEntity entity : hopDong) {
             HopDongEntity hopDongEntity = hopDongRepository.findById(entity.getId()).orElse(null);
-            hopDongEntity.setStatus(0);
+            hopDongEntity.setStatus(false);
             hopDongRepository.save(hopDongEntity);
         }
     }

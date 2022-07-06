@@ -49,13 +49,7 @@ public class LyDoServiceImpl implements LyDoService {
     @Override
     public ResponseEntity<?> getPage(Integer index, Integer size, String lyDo, Integer idCha) {
         Pageable pageable = PageRequest.of(index - 1, size, Sort.by("id").descending());
-//        Page<LyDoEntity> page;
-//        if (lyDo != null){
         Page<LyDoEntity> page = lyDoRepository.search(lyDo,idCha,pageable);
-//        }
-//        else {
-//            page = lyDoRepository.findAll(pageable);
-//        }
         ArrayList<LyDoDto> list = new ArrayList<LyDoDto>();
         for (LyDoEntity entity : page.getContent()) {
             String LyDoCha = null;
@@ -63,7 +57,7 @@ public class LyDoServiceImpl implements LyDoService {
                 Optional<LyDoEntity> lydo = lyDoRepository.findById(Long.valueOf(entity.getId_cha()));
                 LyDoCha = lydo.get().getLyDo();
             }
-            list.add(new LyDoDto(entity.getId(),entity.getLyDo(),LyDoCha,entity.getHuongLuong(),entity.getStatus(),
+            list.add(new LyDoDto(entity.getId(),entity.getLyDo(),LyDoCha,entity.getHuongLuong(),entity.isStatus(),
                     entity.getNguoiTao(),entity.getNguoiSua(), TimeUtil.toHHmmDDMMyyyy(entity.getNgayTao()),TimeUtil.toHHmmDDMMyyyy((entity.getNgaySua()))));
         }
         PageResponse<LyDoDto> data = new PageResponse(index, size, page.getTotalElements(),list);
@@ -78,6 +72,7 @@ public class LyDoServiceImpl implements LyDoService {
             LyDoEntity entity = new LyDoEntity();
             entity.setId_cha(reason.getId_cha());
             entity.setLyDo(reason.getLyDo());
+            entity.setStatus(true);
             entity.setHuongLuong(reason.getHuongLuong());
             entity.setNguoiTao(userEntity.getHoTen());
             lyDoRepository.save(entity);
@@ -98,6 +93,7 @@ public class LyDoServiceImpl implements LyDoService {
             }
             entity.setId_cha(reason.getId_cha());
             entity.setLyDo(reason.getLyDo());
+            entity.setStatus(reason.isStatus());
             entity.setHuongLuong(reason.getHuongLuong());
             entity.setNguoiSua(userEntity.getHoTen());
             lyDoRepository.save(entity);

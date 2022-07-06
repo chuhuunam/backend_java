@@ -11,7 +11,7 @@ public class PhongBanDto {
     private String maPhongBan;
     private String tenPhongBan;
     private String moTa;
-    private Integer status;
+    private boolean status;
     protected String ngayTao;
     protected String ngaySua;
     protected String nguoiTao;
@@ -22,7 +22,7 @@ public class PhongBanDto {
         this.maPhongBan = entity.getMaPhongBan();
         this.tenPhongBan = entity.getTenPhongBan();
         this.moTa = entity.getMoTa();
-        this.status = entity.getStatus();
+        this.status = entity.isStatus();
         this.ngayTao = TimeUtil.toHHmmDDMMyyyy(entity.getNgayTao());
         this.ngaySua = TimeUtil.toHHmmDDMMyyyy(entity.getNgaySua());
         this.nguoiTao = entity.getNguoiTao();

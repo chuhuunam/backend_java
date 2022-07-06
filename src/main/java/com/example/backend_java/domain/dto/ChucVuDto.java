@@ -10,7 +10,7 @@ public class ChucVuDto {
     private String maChucVu;
     private String tenChucVu;
     private String moTa;
-    private Integer status;
+    private boolean status;
     protected String ngayTao;
     protected String ngaySua;
     protected String nguoiTao;
@@ -21,7 +21,7 @@ public class ChucVuDto {
         this.maChucVu = entity.getMaChucVu();
         this.tenChucVu = entity.getTenChucVu();
         this.moTa = entity.getMoTa();
-        this.status = entity.getStatus();
+        this.status = entity.isStatus();
         this.ngayTao = TimeUtil.toHHmmDDMMyyyy(entity.getNgayTao());
         this.ngaySua = TimeUtil.toHHmmDDMMyyyy(entity.getNgaySua());
         this.nguoiTao = entity.getNguoiTao();

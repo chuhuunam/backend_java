@@ -16,9 +16,9 @@ public class ChamCongEntity {
     private Long id;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_ly_do") // thông qua khóa ngoại id_position
+    @JoinColumn(name = "id_ly_do")
     @JsonIgnore
-    private LyDoEntity lydos;
+    private LyDoEntity lydoss;
 
     private Date gioVao;
     private Date gioRa;

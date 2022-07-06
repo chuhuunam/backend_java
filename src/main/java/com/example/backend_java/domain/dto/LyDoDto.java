@@ -10,7 +10,7 @@ public class LyDoDto {
     private String LyDo;
     private String lyDoCha;
     private Integer huongLuong;
-    private Integer status;
+    private boolean status;
     protected String nguoiTao;
     protected String nguoiSua;
     protected String ngayTao;
@@ -19,7 +19,7 @@ public class LyDoDto {
     public LyDoDto() {
     }
 
-    public LyDoDto(Long id, String lyDo, String lyDoCha, Integer huongLuong, Integer status, String nguoiTao, String nguoiSua, String ngayTao, String ngaySua) {
+    public LyDoDto(Long id, String lyDo, String lyDoCha, Integer huongLuong, boolean status, String nguoiTao, String nguoiSua, String ngayTao, String ngaySua) {
         this.id = id;
         LyDo = lyDo;
         this.lyDoCha = lyDoCha;
@@ -35,7 +35,7 @@ public class LyDoDto {
         this.id = entity.getId();
         this.LyDo=entity.getLyDo();
         this.huongLuong=entity.getHuongLuong();
-        this.status = entity.getStatus();
+        this.status = entity.isStatus();
         this.ngayTao = TimeUtil.toHHmmDDMMyyyy(entity.getNgayTao());
         this.ngaySua = TimeUtil.toHHmmDDMMyyyy(entity.getNgaySua());
         this.nguoiTao = entity.getNguoiTao();

@@ -10,7 +10,7 @@ public class LoaiHopDongDto {
     private String tenHopDong;
     private String loaiHopDong;
     private Integer baoHiem;
-    private Integer status;
+    private boolean status;
     protected String ngayTao;
     protected String ngaySua;
     protected String nguoiTao;
@@ -21,7 +21,7 @@ public class LoaiHopDongDto {
         this.tenHopDong = entity.getTenHopDong();
         this.loaiHopDong=entity.getLoaiHopDong();
         this.baoHiem=entity.getBaoHiem();
-        this.status = entity.getStatus();
+        this.status = entity.isStatus();
         this.ngayTao = TimeUtil.toHHmmDDMMyyyy(entity.getNgayTao());
         this.ngaySua = TimeUtil.toHHmmDDMMyyyy(entity.getNgaySua());
         this.nguoiTao = entity.getNguoiTao();

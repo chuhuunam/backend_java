@@ -32,7 +32,7 @@ public class HopDongEntity {
     private Date ngayKy;
     private Date ngayHieuLuc;
     private Date ngayKetThuc;
-    private Integer status;
+    private boolean status;
     private String moTa;
     @CreationTimestamp
     protected Date ngayTao;

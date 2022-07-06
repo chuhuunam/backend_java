@@ -20,7 +20,7 @@ public class LoaiHopDongEntity {
     private String tenHopDong;
     private String loaiHopDong;
     private Integer baoHiem;
-    private Integer status;
+    private boolean status;
     @OneToMany(mappedBy = "loaihopdong", cascade = CascadeType.ALL)
     @JsonIgnore
     Collection<HopDongEntity> hopdong;

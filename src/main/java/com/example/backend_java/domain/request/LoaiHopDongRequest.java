@@ -15,7 +15,7 @@ public class LoaiHopDongRequest {
     @ApiModelProperty(notes = "Bảo hiểm", example = "0 là không,1 là có")
     private Integer baoHiem;
     @ApiModelProperty(notes = "Status", example = "1")
-    private Integer status;
+    private boolean status;
     public ResponseEntity<?> validate() {
         if(Strings.isNullOrEmpty(tenHopDong)){
             return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chưa nhập tên hợp đồng"));
@@ -25,9 +25,6 @@ public class LoaiHopDongRequest {
         }
         if(baoHiem < 0 && baoHiem == null){
             return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chưa nhập BHXH "));
-        }
-        if(status < 0 && status == null){
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chưa nhập status"));
         }
         return null;
     }

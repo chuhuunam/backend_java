@@ -22,7 +22,7 @@ public class ChucVuEntity {
 
     private String moTa;
 
-    private Integer status;
+    private boolean status;
 
     @OneToMany(mappedBy = "positions", cascade = CascadeType.ALL)
     @JsonIgnore

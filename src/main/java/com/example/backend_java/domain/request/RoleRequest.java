@@ -13,7 +13,7 @@ public class RoleRequest {
     private String tenQuyen;
     private String moTa;
     @ApiModelProperty(notes = "Status", example = "1")
-    private Integer status;
+    private boolean status;
 
     public ResponseEntity<?> validate() {
         if(Strings.isNullOrEmpty(maQuyen)){
@@ -24,9 +24,6 @@ public class RoleRequest {
         }
         if(Strings.isNullOrEmpty(moTa)){
             return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chưa nhập mô tả"));
-        }
-        if (status == null || status < 0) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chưa nhập Status"));
         }
         return null;
     }

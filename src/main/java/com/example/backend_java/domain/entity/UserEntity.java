@@ -49,7 +49,7 @@ public class UserEntity {
     @JsonIgnore
     private ChucVuEntity positions;
 
-    private Integer status;
+    private boolean status;
 
     @CreationTimestamp
     protected Date ngayTao;

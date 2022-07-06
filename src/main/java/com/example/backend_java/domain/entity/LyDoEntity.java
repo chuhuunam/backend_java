@@ -17,10 +17,14 @@ public class LyDoEntity {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @OneToMany(mappedBy = "lydoss", cascade = CascadeType.ALL)
+    @JsonIgnore
+    Collection<ChamCongEntity> congEntities;
+
     private Integer id_cha;
     private String lyDo;
     private Integer huongLuong;
-    private Integer status;
+    private boolean status;
     @CreationTimestamp
     protected Date ngayTao;
     @CreationTimestamp
@@ -28,7 +32,5 @@ public class LyDoEntity {
     protected String nguoiTao;
     protected String nguoiSua;
 
-    @OneToMany(mappedBy = "lydos", cascade = CascadeType.ALL)
-    @JsonIgnore
-    Collection<ChamCongEntity> chamcong;
+
 }
