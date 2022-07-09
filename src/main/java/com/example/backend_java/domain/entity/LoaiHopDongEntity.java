@@ -18,7 +18,6 @@ public class LoaiHopDongEntity {
     private Long id;
 
     private String tenHopDong;
-    private String loaiHopDong;
     private Integer baoHiem;
     private boolean status;
     @OneToMany(mappedBy = "loaihopdong", cascade = CascadeType.ALL)

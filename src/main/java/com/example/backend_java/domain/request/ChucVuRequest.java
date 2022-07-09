@@ -14,7 +14,6 @@ public class ChucVuRequest {
     private String tenChucVu;
 
     private String moTa;
-    @ApiModelProperty(notes = "Status", example = "1")
     private boolean status;
     public ResponseEntity<?> validate() {
         if(Strings.isNullOrEmpty(maChucVu)){

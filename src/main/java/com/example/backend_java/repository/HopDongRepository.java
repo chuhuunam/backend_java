@@ -18,6 +18,7 @@ public interface HopDongRepository extends JpaRepository<HopDongEntity,Long> {
             "WHERE (:tenNhanVien is null or lower(user.ho_ten) like lower(concat(concat('%', :tenNhanVien),'%')))\n" +
             "AND (:maLoaiHopDong is null or hop_dong.ma_hop_dong = :maLoaiHopDong)\n" +
             "AND (:status is null or hop_dong.status = :status)\n" +
+            "ORDER BY `hop_dong`.`id` DESC \n" +
             "LIMIT :limit,:offset")
     List<Object[]> getHopDong(String tenNhanVien, Integer maLoaiHopDong, Integer status, int limit, int offset);
 

@@ -50,7 +50,6 @@ public class LoaiHopDongServiceImpl implements LoaiHopDongService {
             UserEntity userEntity = jwtUtils.getUserEntity(request);
             LoaiHopDongEntity entity = new LoaiHopDongEntity();
             entity.setTenHopDong(req.getTenHopDong());
-            entity.setLoaiHopDong(req.getLoaiHopDong());
             entity.setBaoHiem(req.getBaoHiem());
             entity.setStatus(true);
             entity.setNguoiTao(userEntity.getHoTen());
@@ -71,7 +70,6 @@ public class LoaiHopDongServiceImpl implements LoaiHopDongService {
                 return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
             }
             entity.setTenHopDong(req.getTenHopDong());
-            entity.setLoaiHopDong(req.getLoaiHopDong());
             entity.setBaoHiem(req.getBaoHiem());
             entity.setStatus(req.isStatus());
             entity.setNguoiSua(userEntity.getHoTen());

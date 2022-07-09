@@ -27,7 +27,7 @@ public class HopDongEntity {
     @JoinColumn(name = "id_user")
     @JsonIgnore
     private UserEntity nguoidung;
-
+    private String tinhChatLaoDong;
     private Float luong;
     private Date ngayKy;
     private Date ngayHieuLuc;

@@ -8,7 +8,6 @@ import lombok.Data;
 public class LoaiHopDongDto {
     private Long id;
     private String tenHopDong;
-    private String loaiHopDong;
     private Integer baoHiem;
     private boolean status;
     protected String ngayTao;
@@ -19,7 +18,6 @@ public class LoaiHopDongDto {
     public void  fromEntity (LoaiHopDongEntity entity) {
         this.id = entity.getId();
         this.tenHopDong = entity.getTenHopDong();
-        this.loaiHopDong=entity.getLoaiHopDong();
         this.baoHiem=entity.getBaoHiem();
         this.status = entity.isStatus();
         this.ngayTao = TimeUtil.toHHmmDDMMyyyy(entity.getNgayTao());

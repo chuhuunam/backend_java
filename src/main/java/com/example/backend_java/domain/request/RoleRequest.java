@@ -12,7 +12,6 @@ public class RoleRequest {
     private String maQuyen;
     private String tenQuyen;
     private String moTa;
-    @ApiModelProperty(notes = "Status", example = "1")
     private boolean status;
 
     public ResponseEntity<?> validate() {

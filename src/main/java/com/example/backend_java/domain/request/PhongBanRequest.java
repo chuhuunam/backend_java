@@ -14,7 +14,6 @@ public class PhongBanRequest {
     private String tenPhongBan;
 
     private String moTa;
-    @ApiModelProperty(notes = "Status", example = "1")
     private boolean status;
 
     public ResponseEntity<?> validate() {

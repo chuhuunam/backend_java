@@ -35,6 +35,10 @@ public class UserEntity {
 
     private String diaChi;
 
+    private String cmt;
+
+    private Date ngaySinh;
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_phong_ban") // thông qua khóa ngoại id_department
     @JsonIgnore

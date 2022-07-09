@@ -13,7 +13,6 @@ public class LyDoRequest {
     private Integer id_cha;
     private String lyDo;
     private Integer huongLuong;
-    @ApiModelProperty(notes = "Status", example = "1")
     private boolean status;
 
     public ResponseEntity<?> validate() {
