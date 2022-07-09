@@ -3,7 +3,6 @@ package com.example.backend_java.domain.response;
 import lombok.Data;
 
 import java.util.List;
-
 @Data
 public class JwtResponse {
 	private String fullname;
@@ -13,7 +12,7 @@ public class JwtResponse {
 	private String email;
 	private List<String> roles;
 
-	public JwtResponse(String accessToken, Long id, String fullname, String username, String email, List<String> roles) {
+	public JwtResponse(String accessToken, Long id,String fullname, String username, String email, List<String> roles) {
 		this.token = accessToken;
 		this.id = id;
 		this.fullname = fullname;

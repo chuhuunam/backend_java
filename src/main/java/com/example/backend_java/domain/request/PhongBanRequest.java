@@ -3,7 +3,6 @@ package com.example.backend_java.domain.request;
 import com.example.backend_java.constant.Constant;
 import com.example.backend_java.domain.response.ResponseResponse;
 import com.google.common.base.Strings;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.http.ResponseEntity;
 

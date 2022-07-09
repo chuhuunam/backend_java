@@ -9,7 +9,6 @@ import java.io.IOException;
 
 @Component
 public class TimeScheduled {
-
     @Autowired
     HopDongService hopDongService;
     @Scheduled(cron = "0 53 13 * * ?", zone = "Asia/Ho_Chi_Minh")

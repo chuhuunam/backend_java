@@ -14,6 +14,7 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
@@ -47,7 +48,7 @@ public class API2_NguoiDung extends _BaseController{
     @PostMapping("")
     @ApiOperation(value = "Thêm nhân viên")
     public ResponseEntity<?> create(HttpServletRequest request,
-                                    @RequestBody UserRequest user) {
+                                    @RequestBody UserRequest user) throws MessagingException {
         if (request == null) {
             return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Role invalid"));
         } else {

@@ -1,6 +1,7 @@
 package com.example.backend_java.service.Impl;
 
 import com.example.backend_java.constant.Constant;
+import com.example.backend_java.domain.dto.DataMailDto;
 import com.example.backend_java.domain.dto.UserDto;
 import com.example.backend_java.domain.entity.*;
 import com.example.backend_java.domain.request.PasswordRequest;
@@ -10,9 +11,11 @@ import com.example.backend_java.domain.request.updateDepRequest;
 import com.example.backend_java.domain.response.PageResponse;
 import com.example.backend_java.domain.response.ResponseResponse;
 import com.example.backend_java.repository.*;
+import com.example.backend_java.service.MailService;
 import com.example.backend_java.service.UserService;
 import com.example.backend_java.utils.DataUtils;
 import com.example.backend_java.utils.JwtUtils;
+import com.example.backend_java.utils.VNCharacterUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,14 +34,16 @@ public class UserServiceImpl implements UserService {
     private final PhongBanRepository phongBanRepository;
     private final ChucVuRepository chucVuRepository;
     private final RoleRepository roleRepository;
+    private final MailService mailService;
 
-    public UserServiceImpl(JwtUtils jwtUtils, UserRepository userRepository, LoaiHopDongRepository loaiHopDongRepository, PhongBanRepository phongBanRepository, ChucVuRepository chucVuRepository, RoleRepository roleRepository) {
+    public UserServiceImpl(JwtUtils jwtUtils, UserRepository userRepository, LoaiHopDongRepository loaiHopDongRepository, PhongBanRepository phongBanRepository, ChucVuRepository chucVuRepository, RoleRepository roleRepository, MailService mailService) {
         this.jwtUtils = jwtUtils;
         this.userRepository = userRepository;
         this.loaiHopDongRepository = loaiHopDongRepository;
         this.phongBanRepository = phongBanRepository;
         this.chucVuRepository = chucVuRepository;
         this.roleRepository = roleRepository;
+        this.mailService = mailService;
     }
 
     @Override
@@ -82,11 +87,12 @@ public class UserServiceImpl implements UserService {
             if (userRepository.existsAllByEmail(user.getEmail())) {
                 return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Error: Email is already in use!"));
             }
+            DataMailDto dataMail = new DataMailDto();
             String[] tmp = user.getHoTen().split(" ");
             String username = "";
             for (int i = tmp.length - 1; i >= 0; i--) {
                 if (i == tmp.length - 1) {
-                    username = username + tmp[i].toLowerCase();
+                    username = VNCharacterUtils.removeAccent(username + tmp[i].toLowerCase());
                 }
             }
             for (int j = 0; j < tmp.length - 1; j++) {
@@ -134,6 +140,17 @@ public class UserServiceImpl implements UserService {
             entity.setRoles(roles);
             entity.setNguoiTao(userEntity.getHoTen());
             userRepository.save(entity);
+
+            dataMail.setTo(user.getEmail());
+            dataMail.setSubject("Thông tin tài khoản cá nhân");
+
+            Map<String, Object> props = new HashMap<>();
+            props.put("name", user.getHoTen());
+            props.put("username", username);
+            props.put("password", pass);
+            dataMail.setProps(props);
+
+            mailService.sendHtmlMail(dataMail, "client");
             return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Thêm thành công"));
         } catch (Throwable ex) {
             return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "System busy"));

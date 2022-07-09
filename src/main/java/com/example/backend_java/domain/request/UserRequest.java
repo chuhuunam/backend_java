@@ -9,8 +9,6 @@ import java.util.Set;
 public class UserRequest {
     private String email;
     private String hoTen;
-    private String taiKhoan;
-    private String matKhau;
     private String anhDaiDien;
     private String gioiTinh;
     private String soDienThoai;

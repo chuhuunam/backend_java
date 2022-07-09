@@ -25,6 +25,9 @@ public interface HopDongRepository extends JpaRepository<HopDongEntity,Long> {
     @Query(nativeQuery = true, value ="SELECT id FROM hop_dong where id=(select max(id) from hop_dong);")
     Integer getId();
 
+    @Query(nativeQuery = true, value ="SELECT * FROM `hop_dong` WHERE status = 1 AND id_user =:idUser")
+    List<HopDongEntity> checkCreate(long idUser);
+
     @Query(nativeQuery = true,value = "SELECT * FROM `hop_dong` WHERE hop_dong.status = 1 AND DATEDIFF(hop_dong.ngay_ket_thuc,CURDATE()) < 0;")
     List<HopDongEntity> checkStatus();
 

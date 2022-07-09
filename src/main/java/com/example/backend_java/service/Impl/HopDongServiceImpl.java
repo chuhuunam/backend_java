@@ -36,7 +36,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class HopDongServiceImpl implements HopDongService {
@@ -99,27 +98,32 @@ public class HopDongServiceImpl implements HopDongService {
     public ResponseEntity<?> createHopDong(HttpServletRequest request, HopDongRequest hopdong) {
         try {
             UserEntity userEntity = jwtUtils.getUserEntity(request);
-            HopDongEntity entity = new HopDongEntity();
-            Integer stt = hopDongRepository.getId();
-            if (stt == null){
-                stt =1;
+            List<HopDongEntity> check = hopDongRepository.checkCreate(hopdong.getId_user());
+            if (check == null){
+                HopDongEntity entity = new HopDongEntity();
+                Integer stt = hopDongRepository.getId();
+                if (stt == null){
+                    stt =1;
+                }else {
+                    stt = stt+1;
+                }
+                LoaiHopDongEntity loaihopdong = loaiHopDongRepository.findById(Long.valueOf(hopdong.getId_loai_hop_dong())).get();
+                entity.setLoaihopdong(loaihopdong);
+                UserEntity user = userRepository.findById(Long.valueOf(hopdong.getId_user())).get();
+                entity.setNguoidung(user);
+                entity.setMaHopDong("HD_"+stt);
+                entity.setNgayKy(hopdong.getNgayKy());
+                entity.setNgayHieuLuc(hopdong.getNgayHieuLuc());
+                entity.setNgayKetThuc(hopdong.getNgayKetThuc());
+                entity.setLuong(hopdong.getLuong());
+                entity.setStatus(true);
+                entity.setMoTa(hopdong.getMoTa());
+                entity.setNguoiTao(userEntity.getHoTen());
+                hopDongRepository.save(entity);
+                return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Thêm thành công"));
             }else {
-                stt = stt+1;
+                return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Nhân viên vẫn còn hợp đồng"));
             }
-            LoaiHopDongEntity loaihopdong = loaiHopDongRepository.findById(Long.valueOf(hopdong.getId_loai_hop_dong())).get();
-            entity.setLoaihopdong(loaihopdong);
-            UserEntity user = userRepository.findById(Long.valueOf(hopdong.getId_user())).get();
-            entity.setNguoidung(user);
-            entity.setMaHopDong("HD_"+stt);
-            entity.setNgayKy(hopdong.getNgayKy());
-            entity.setNgayHieuLuc(hopdong.getNgayHieuLuc());
-            entity.setNgayKetThuc(hopdong.getNgayKetThuc());
-            entity.setLuong(hopdong.getLuong());
-            entity.setStatus(true);
-            entity.setMoTa(hopdong.getMoTa());
-            entity.setNguoiTao(userEntity.getHoTen());
-            hopDongRepository.save(entity);
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Thêm thành công"));
         } catch (Exception e) {
             return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "System busy"));
         }
