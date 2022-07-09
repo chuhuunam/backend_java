@@ -50,8 +50,6 @@ public class UserServiceImpl implements UserService {
             List<Object[]> page;
             if (s.getMaQuyen().equals("Admin")){
                 page = userRepository.getUser(keyword,idPhongBan,idChucVu,offset, size);
-                System.out.println(idChucVu);
-                System.out.println(idPhongBan);
                 ArrayList<UserDto> list = new ArrayList<>();
                 for (Object[] entity : page) {
                     LoaiHopDongEntity loaihd = loaiHopDongRepository.Name((BigInteger) entity[14]);
@@ -62,7 +60,17 @@ public class UserServiceImpl implements UserService {
                 PageResponse<HopDongEntity> data = new PageResponse(index, size, (long) page.size(), list);
                 return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, data));
             }else {
-
+                Integer depart = Math.toIntExact(userEntity.getDepartments().getId());
+                page = userRepository.getUser(keyword,depart,idChucVu,offset, size);
+                ArrayList<UserDto> list = new ArrayList<>();
+                for (Object[] entity : page) {
+                    LoaiHopDongEntity loaihd = loaiHopDongRepository.Name((BigInteger) entity[14]);
+                    list.add(new UserDto(entity[0],entity[1],entity[2],entity[3],entity[4],entity[5],entity[6],
+                            entity[7],entity[8],entity[9],(Boolean)entity[10],entity[11],entity[12],entity[13],loaihd.getTenHopDong(),
+                            loaihd.getBaoHiem(),entity[15],entity[16]));
+                }
+                PageResponse<HopDongEntity> data = new PageResponse(index, size, (long) page.size(), list);
+                return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, data));
             }
         }
         return null;

@@ -26,6 +26,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
             "LIMIT :limit,:offset")
     List<Object[]> getUser(String keyword, Integer idPhongBan, Integer idChucVu, int limit, int offset);
 
+
+
     @Query(nativeQuery = true, value = "SELECT COUNT(*) FROM user WHERE user.tai_khoan=:username")
     Integer Count(String username);
 }
