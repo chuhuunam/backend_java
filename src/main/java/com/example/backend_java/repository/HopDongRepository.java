@@ -35,6 +35,7 @@ public interface HopDongRepository extends JpaRepository<HopDongEntity,Long> {
             "FROM user \n" +
             "JOIN hop_dong ON user.id=hop_dong.id_user \n" +
             "JOIN chuc_vu ON chuc_vu.id = user.id_chuc_vu \n" +
-            "JOIN phong_ban ON phong_ban.id = user.id_phong_ban")
+            "JOIN phong_ban ON phong_ban.id = user.id_phong_ban \n" +
+            "ORDER BY `hop_dong`.`id` DESC")
     List<Object[]> exfort();
 }

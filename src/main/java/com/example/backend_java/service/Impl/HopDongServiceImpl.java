@@ -18,6 +18,7 @@ import com.example.backend_java.utils.TimeUtil;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -54,26 +55,17 @@ public class HopDongServiceImpl implements HopDongService {
         this.jwtUtils = jwtUtils;
     }
 
-    protected CellStyle createExcelStyle(XSSFWorkbook workbook, boolean header) {
-        CellStyle style = workbook.createCellStyle();
-        style.setBorderBottom(HSSFCellStyle.BORDER_THIN);
-        style.setBorderTop(HSSFCellStyle.BORDER_THIN);
-        style.setBorderRight(HSSFCellStyle.BORDER_THIN);
-        style.setBorderLeft(HSSFCellStyle.BORDER_THIN);
-        XSSFFont font = workbook.createFont();
-        font.setBold(header ? true : false);
-        font.setFontHeight(header ? 16 : 14);
-        style.setFont(font);
-        return style;
-    }
-
     protected void createCell(XSSFSheet sheet, Row row, int columnCount, Object value, CellStyle style) {
         sheet.autoSizeColumn(columnCount);
         Cell cell = row.createCell(columnCount);
         if (value instanceof Integer) {
             cell.setCellValue((Integer) value);
+        }if (value instanceof Float) {
+            cell.setCellValue((Float) value);
         } else if (value instanceof Boolean) {
             cell.setCellValue((Boolean) value);
+        }else if (value instanceof Long) {
+            cell.setCellValue((Long) value);
         }else {
             cell.setCellValue((String) value);
         }
@@ -193,7 +185,6 @@ public class HopDongServiceImpl implements HopDongService {
 
         writeHeaderLine(workbook, sheet);
         writeDataLines(workbook, sheet);
-
         ServletOutputStream outputStream = response.getOutputStream();
         workbook.write(outputStream);
         workbook.close();
@@ -201,7 +192,7 @@ public class HopDongServiceImpl implements HopDongService {
     }
     private void writeHeaderLine(XSSFWorkbook workbook, XSSFSheet sheet) {
         Row row = sheet.createRow(0);
-        CellStyle style = createExcelStyle(workbook, true);
+        CellStyle style = workbook.createCellStyle();
         createCell(sheet, row, 0, "STT", style);
         createCell(sheet, row, 1, "Họ và Tên", style);
         createCell(sheet, row, 2, "Mã hợp đồng", style);
@@ -220,7 +211,7 @@ public class HopDongServiceImpl implements HopDongService {
 
     private void writeDataLines(XSSFWorkbook workbook, XSSFSheet sheet) {
         int rowCount = 1;
-        CellStyle style = createExcelStyle(workbook, false);
+        CellStyle style = workbook.createCellStyle();
         List<Object[]> list = hopDongRepository.exfort();
         for (Object[] entity : list) {
             Row row = sheet.createRow(rowCount++);
@@ -236,12 +227,13 @@ public class HopDongServiceImpl implements HopDongService {
             createCell(sheet, row, columnCount++, TimeUtil.toDDMMyyyy((Timestamp) entity[6]), style);
             createCell(sheet, row, columnCount++, TimeUtil.toDDMMyyyy((Timestamp) entity[7]), style);
             createCell(sheet, row, columnCount++, entity[8], style);
-            createCell(sheet, row, columnCount++, entity[9], style);
-            createCell(sheet, row, columnCount++, entity[10], style);
+            String thoiHan = String.valueOf(entity[9]);
+            createCell(sheet, row, columnCount++, thoiHan, style);
+            String trangThai = String.valueOf(entity[10]) == "true" ? "Còn thời hạn":"Hết thời hạn";
+            createCell(sheet, row, columnCount++,trangThai, style);
+            String baoHiem = loaihd.getBaoHiem() == 1 ? "Có" : "Không có";
+            createCell(sheet, row, columnCount++, baoHiem, style);
             createCell(sheet, row, columnCount++, entity[11], style);
-            createCell(sheet, row, columnCount++, entity[12], style);
-            createCell(sheet, row, columnCount++, loaihd.getBaoHiem(), style);
-            createCell(sheet, row, columnCount++, entity[13], style);
         }
     }
 }
