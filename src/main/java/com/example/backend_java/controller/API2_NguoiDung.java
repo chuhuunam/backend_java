@@ -47,6 +47,14 @@ public class API2_NguoiDung extends _BaseController{
         Integer size = validPageSize(pageSize);
         return userService.getPageUser(request,keyword,idPhongBan,idChucVu,index, size);
     }
+    @GetMapping("/{id}")
+    @ApiOperation(value = "Chi tiết nhân viên")
+    public ResponseEntity<?> listUserId(@RequestParam(required = false, name = "id")
+            @ApiParam(value = "Id") Long id){
+        return userService.getUser(id);
+    }
+
+
     @PostMapping("")
     @ApiOperation(value = "Thêm nhân viên")
     public ResponseEntity<?> create(HttpServletRequest request,

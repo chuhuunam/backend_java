@@ -279,6 +279,7 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, e));
         }
     }
+
     protected void createCell(XSSFSheet sheet, Row row, int columnCount, Object value, CellStyle style) {
         sheet.autoSizeColumn(columnCount);
         Cell cell = row.createCell(columnCount);
@@ -315,6 +316,20 @@ public class UserServiceImpl implements UserService {
         workbook.close();
         outputStream.close();
     }
+
+    @Override
+    public ResponseEntity<?> getUser(Long id) {
+        List<Object[]> page = userRepository.getUserId(id);
+        ArrayList<UserDto> list = new ArrayList<>();
+        for (Object[] entity : page) {
+            LoaiHopDongEntity loaihd = loaiHopDongRepository.Name((BigInteger) entity[14]);
+            list.add(new UserDto(entity[0],entity[1],entity[2],entity[3],entity[4],entity[5],entity[6],
+                    entity[7],entity[8],entity[9],(Boolean)entity[10],entity[11],entity[12],entity[13],loaihd.getTenHopDong(),
+                    loaihd.getBaoHiem(),entity[15],entity[16]));
+        }
+        return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, list));
+    }
+
     private void writeHeaderLine(XSSFWorkbook workbook, XSSFSheet sheet) {
         Row row = sheet.createRow(0);
         CellStyle style = workbook.createCellStyle();

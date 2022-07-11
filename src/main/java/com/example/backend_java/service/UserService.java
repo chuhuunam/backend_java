@@ -29,4 +29,6 @@ public interface UserService {
     ResponseEntity<?> updateDepartment(HttpServletRequest request, updateDepRequest department, Long id);
 
     void exportFile(HttpServletResponse response) throws IOException;
+
+    ResponseEntity<?> getUser(Long id);
 }
