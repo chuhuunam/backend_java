@@ -15,11 +15,8 @@ import com.example.backend_java.repository.UserRepository;
 import com.example.backend_java.service.HopDongService;
 import com.example.backend_java.utils.JwtUtils;
 import com.example.backend_java.utils.TimeUtil;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.RichTextString;
-import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -192,7 +189,11 @@ public class HopDongServiceImpl implements HopDongService {
     }
     private void writeHeaderLine(XSSFWorkbook workbook, XSSFSheet sheet) {
         Row row = sheet.createRow(0);
+        XSSFFont font = workbook.createFont();
+        font.setBold(true);
+        font.setFontHeight(13);
         CellStyle style = workbook.createCellStyle();
+        style.setFont(font);
         createCell(sheet, row, 0, "STT", style);
         createCell(sheet, row, 1, "Họ và Tên", style);
         createCell(sheet, row, 2, "Mã hợp đồng", style);

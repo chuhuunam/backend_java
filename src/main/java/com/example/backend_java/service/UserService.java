@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @Service
 public interface UserService {
@@ -25,4 +27,6 @@ public interface UserService {
     ResponseEntity<?> updateStatus(HttpServletRequest request, StatusRequest status, Long id);
 
     ResponseEntity<?> updateDepartment(HttpServletRequest request, updateDepRequest department, Long id);
+
+    void exportFile(HttpServletResponse response) throws IOException;
 }

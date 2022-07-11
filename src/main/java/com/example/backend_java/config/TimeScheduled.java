@@ -11,8 +11,8 @@ import java.io.IOException;
 public class TimeScheduled {
     @Autowired
     HopDongService hopDongService;
-    @Scheduled(cron = "0 53 13 * * ?", zone = "Asia/Ho_Chi_Minh")
-    public void task() throws IOException {
+    @Scheduled(cron = "0 01 00 * * ?", zone = "Asia/Ho_Chi_Minh")
+    public void task(){
         hopDongService.UpdateTime();
     }
 }

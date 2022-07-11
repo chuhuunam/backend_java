@@ -30,4 +30,12 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     @Query(nativeQuery = true, value = "SELECT COUNT(*) FROM user WHERE user.tai_khoan=:username")
     Integer Count(String username);
+
+    @Query(nativeQuery = true, value = "SELECT tai_khoan,ho_ten,gioi_tinh,ngay_sinh,so_dien_thoai,email,dia_chi,cmt,user.status,phong_ban.ten_phong_ban,chuc_vu.ten_chuc_vu,hop_dong.tinh_chat_lao_dong,hop_dong.id_loai_hop_dong\n" +
+            "FROM user\n" +
+            "JOIN phong_ban ON phong_ban.id = user.id_phong_ban\n" +
+            "JOIN chuc_vu ON chuc_vu.id = user.id_chuc_vu\n" +
+            "JOIN hop_dong ON hop_dong.id_user = user.id\n" +
+            "WHERE hop_dong.status=1")
+    List<Object[]> exfort();
 }

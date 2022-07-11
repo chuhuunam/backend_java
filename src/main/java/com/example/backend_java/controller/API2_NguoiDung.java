@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/user")
@@ -120,5 +122,10 @@ public class API2_NguoiDung extends _BaseController{
         }else {
             return userService.updateDepartment(request, department, id);
         }
+    }
+    @GetMapping("/export_file")
+    @ApiOperation(value = "Xuất file")
+    public void exportFile(HttpServletResponse response) throws IOException {
+        userService.exportFile(response);
     }
 }
