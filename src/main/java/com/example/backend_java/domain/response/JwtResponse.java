@@ -5,18 +5,18 @@ import lombok.Data;
 import java.util.List;
 @Data
 public class JwtResponse {
-	private String hoTen;
+	private String fullName;
 	private String token;
 	private Long id;
-	private String taiKhoan;
+	private String userName;
 	private String email;
 	private List<String> roles;
 
-	public JwtResponse(String accessToken, Long id,String hoTen, String taiKhoan, String email, List<String> roles) {
+	public JwtResponse(String accessToken, Long id,String fullName, String userName, String email, List<String> roles) {
 		this.token = accessToken;
 		this.id = id;
-		this.hoTen = hoTen;
-		this.taiKhoan = taiKhoan;
+		this.fullName = fullName;
+		this.userName = userName;
 		this.email = email;
 		this.roles = roles;
 	}
