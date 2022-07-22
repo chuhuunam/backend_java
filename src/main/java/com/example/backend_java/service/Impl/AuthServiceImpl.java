@@ -45,10 +45,10 @@ public class AuthServiceImpl implements AuthService {
         try {
             UserEntity entity = userRepository.findByTaiKhoan(login.getTaiKhoan());
 
-            UserEntity entity1 = userRepository.findByMatKhau(_passwordEncoder.encode(login.getMatKhau()));
-            if (entity1 == null){
-                return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Mật khẩu của bạn bị sai"));
-            }
+//            UserEntity entity1 = userRepository.findByMatKhau(_passwordEncoder.encode(login.getMatKhau()));
+//            if (entity1 == null){
+//                return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Mật khẩu của bạn bị sai"));
+//            }
             if (entity == null){
                 return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Tài khoản của bạn bị sai"));
             }else if (!entity.isStatus()){
