@@ -17,6 +17,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
@@ -30,6 +31,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
     private final JwtUtils jwtUtils;
+    BCryptPasswordEncoder _passwordEncoder = new BCryptPasswordEncoder();
 
     public AuthServiceImpl(AuthenticationManager authenticationManager, UserRepository userRepository, TokenRepository tokenRepository, JwtUtils jwtUtils) {
         this.authenticationManager = authenticationManager;
@@ -41,10 +43,17 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ResponseEntity<?> login(HttpServletResponse request, LoginRequest login) {
         try {
-            UserEntity entity = userRepository.findByTaiKhoanAndStatus(login.getTaiKhoan(),true);
+            UserEntity entity = userRepository.findByTaiKhoan(login.getTaiKhoan());
+
+            UserEntity entity1 = userRepository.findByMatKhau(_passwordEncoder.encode(login.getMatKhau()));
+            if (entity1 == null){
+                return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Mật khẩu của bạn bị sai"));
+            }
             if (entity == null){
+                return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Tài khoản của bạn bị sai"));
+            }else if (!entity.isStatus()){
                 return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Tài khoản bị khóa"));
-            }else {
+            }else{
                 Authentication authentication = authenticationManager
                         .authenticate(new UsernamePasswordAuthenticationToken(login.getTaiKhoan(), login.getMatKhau()));
                 SecurityContextHolder.getContext().setAuthentication(authentication);

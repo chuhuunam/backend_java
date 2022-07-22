@@ -10,7 +10,9 @@ import java.util.List;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
     UserEntity findByTaiKhoan(String taiKhoan);
-    UserEntity findByTaiKhoanAndStatus(String taiKhoan,boolean Status);
+
+    UserEntity findByMatKhau(String matKhau);
+
     boolean existsAllByEmail(String email);
 
     @Query(nativeQuery = true, value = "SELECT user.id,tai_khoan,ho_ten,gioi_tinh,ngay_sinh,so_dien_thoai,email,anh_dai_dien,dia_chi,cmt,user.status,phong_ban.ten_phong_ban,chuc_vu.ten_chuc_vu,hop_dong.tinh_chat_lao_dong,hop_dong.id_loai_hop_dong,hop_dong.ngay_hieu_luc,hop_dong.ngay_ket_thuc\n" +
