@@ -5,6 +5,7 @@ import com.example.backend_java.domain.dto.RoleDto;
 import com.example.backend_java.domain.entity.RoleEntity;
 import com.example.backend_java.domain.entity.UserEntity;
 import com.example.backend_java.domain.request.RoleRequest;
+import com.example.backend_java.domain.response.ErrResponse;
 import com.example.backend_java.domain.response.ResponseResponse;
 import com.example.backend_java.repository.RoleRepository;
 import com.example.backend_java.service.RoleService;
@@ -30,15 +31,18 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public ResponseEntity<?> getAll() {
-        List<RoleEntity> list = roleRepository.findAll();
-
-        ArrayList<RoleDto> getAll = new ArrayList<>();
-        for (RoleEntity entity : list) {
-            RoleDto r = new RoleDto();
-            r.fromEntity(entity);
-            getAll.add(r);
+        try {
+            List<RoleEntity> list = roleRepository.findAll();
+            ArrayList<RoleDto> getAll = new ArrayList<>();
+            for (RoleEntity entity : list) {
+                RoleDto r = new RoleDto();
+                r.fromEntity(entity);
+                getAll.add(r);
+            }
+            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, getAll));
+        } catch (Throwable ex) {
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Danh sách quyền lỗi"));
         }
-        return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, getAll));
     }
 
     @Override
@@ -52,9 +56,9 @@ public class RoleServiceImpl implements RoleService {
             entity.setStatus(true);
             entity.setNguoiTao(userEntity.getHoTen());
             roleRepository.save(entity);
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Thêm thành công"));
+            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Thêm quyền thành công"));
         } catch (Exception e) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "System busy"));
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Thêm quyền lỗi"));
         }
     }
 
@@ -62,9 +66,9 @@ public class RoleServiceImpl implements RoleService {
     public ResponseEntity<?> updateRole(HttpServletRequest request, RoleRequest role, Long id) {
         try {
             UserEntity userEntity = jwtUtils.getUserEntity(request);
-            RoleEntity entity = roleRepository.findById(id).orElse(null) ;
+            RoleEntity entity = roleRepository.findById(id).orElse(null);
             if (entity == null) {
-                return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
+                return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
             }
             entity.setMaQuyen(role.getMaQuyen());
             entity.setTenQuyen(role.getTenQuyen());
@@ -72,23 +76,23 @@ public class RoleServiceImpl implements RoleService {
             entity.setStatus(role.isStatus());
             entity.setNguoiSua(userEntity.getHoTen());
             roleRepository.save(entity);
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Sửa thành công"));
+            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Sửa quyền thành công"));
         } catch (Throwable ex) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "System busy"));
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Sửa quyền lỗi"));
         }
     }
 
     @Override
     public ResponseEntity<?> deleteRole(Long id) {
         try {
-            RoleEntity entity = roleRepository.findById(id).orElse(null) ;
+            RoleEntity entity = roleRepository.findById(id).orElse(null);
             if (entity == null) {
-                return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
+                return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
             }
             roleRepository.delete(entity);
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Xóa thành công"));
+            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Xóa quyền thành công"));
         } catch (Throwable ex) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "System busy"));
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Xóa quyền lỗi"));
         }
     }
 }

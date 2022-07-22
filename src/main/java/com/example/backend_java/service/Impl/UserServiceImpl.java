@@ -2,7 +2,9 @@ package com.example.backend_java.service.Impl;
 
 import com.example.backend_java.constant.Constant;
 import com.example.backend_java.domain.dto.DataMailDto;
+import com.example.backend_java.domain.dto.RoleDto;
 import com.example.backend_java.domain.dto.UserDto;
+import com.example.backend_java.domain.dto.UserLoginDto;
 import com.example.backend_java.domain.entity.*;
 import com.example.backend_java.domain.request.PasswordRequest;
 import com.example.backend_java.domain.request.StatusRequest;
@@ -328,6 +330,23 @@ public class UserServiceImpl implements UserService {
             list.add(new UserDto(entity[0], entity[1], entity[2], entity[3], entity[4], entity[5], entity[6],
                     entity[7], entity[8], entity[9], (Boolean) entity[10], entity[11], entity[12], entity[13], loaihd.getTenHopDong(),
                     loaihd.getBaoHiem(), entity[15], entity[16]));
+        }
+        return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, list));
+    }
+
+    @Override
+    public ResponseEntity<?> getList(HttpServletRequest request) {
+        UserEntity userEntity = jwtUtils.getUserEntity(request);
+        List<Object[]> page = userRepository.getList(userEntity.getId());
+        String quyen = null;
+        UserEntity userEntity1 = userRepository.findById(userEntity.getId()).get();
+        for (RoleEntity a : userEntity1.getRoles()){
+            quyen = a.getMaQuyen();
+        }
+        ArrayList<UserLoginDto> list = new ArrayList<>();
+        for (Object[] entity : page) {
+            list.add(new UserLoginDto(entity[0], entity[1], entity[2], entity[3], entity[4], entity[5], entity[6],
+                    entity[7], entity[8], entity[9], entity[10], entity[11],quyen));
         }
         return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, list));
     }

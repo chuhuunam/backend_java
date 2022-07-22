@@ -2,7 +2,7 @@ package com.example.backend_java.controller;
 
 import com.example.backend_java.constant.Constant;
 import com.example.backend_java.domain.request.LoaiHopDongRequest;
-import com.example.backend_java.domain.response.ResponseResponse;
+import com.example.backend_java.domain.response.ErrResponse;
 import com.example.backend_java.service.LoaiHopDongService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping("/api/type_contract")
 @Api(value = "API_7", description = "Loại hợp đồng", tags = {"API_7"})
-public class API7_LoaiHopDong extends _BaseController{
+public class API7_LoaiHopDong extends _BaseController {
 
     private final LoaiHopDongService loaiHopDongService;
 
@@ -41,10 +41,10 @@ public class API7_LoaiHopDong extends _BaseController{
             @RequestParam(required = false, name = "loaiHopDong")
             @ApiParam(value = "Nhập loại hợp đồng ") String loaiHopDong,
             @RequestParam(required = false, name = "baoHiem")
-            @ApiParam(value = "Nhập bảo hiểm ") Integer baoHiem){
+            @ApiParam(value = "Nhập bảo hiểm ") Integer baoHiem) {
         Integer index = validPageIndex(pageIndex);
         Integer size = validPageSize(pageSize);
-        return loaiHopDongService.getPage(index, size,tenHopDong,loaiHopDong,baoHiem);
+        return loaiHopDongService.getPage(index, size, tenHopDong, loaiHopDong, baoHiem);
     }
 
     @PostMapping("")
@@ -52,7 +52,7 @@ public class API7_LoaiHopDong extends _BaseController{
     public ResponseEntity<?> create(HttpServletRequest request,
                                     @RequestBody LoaiHopDongRequest req) {
         if (request == null) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Role invalid"));
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Vui lòng nhập đầy đủ thông tin"));
         } else {
             ResponseEntity<?> response = req.validate();
             if (response == null) {
@@ -70,7 +70,7 @@ public class API7_LoaiHopDong extends _BaseController{
                                     @PathVariable(value = "id") Long id) {
         logger.info("=> update loại hợp đồng");
         if (request == null) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Id Role invalid"));
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Vui lòng nhập đầy đủ thông tin"));
         } else {
             ResponseEntity<?> response = req.validate();
             if (response == null) {
@@ -87,7 +87,7 @@ public class API7_LoaiHopDong extends _BaseController{
             @PathVariable(value = "id") Long id) {
         logger.info("=>delete loại hợp đồng");
         if (id == null) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Id Role invalid"));
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Vui lòng nhập đầy đủ thông tin"));
         } else {
             return loaiHopDongService.deleteTypeContract(id);
         }

@@ -5,6 +5,7 @@ import com.example.backend_java.domain.dto.LyDoDto;
 import com.example.backend_java.domain.entity.LyDoEntity;
 import com.example.backend_java.domain.entity.UserEntity;
 import com.example.backend_java.domain.request.LyDoRequest;
+import com.example.backend_java.domain.response.ErrResponse;
 import com.example.backend_java.domain.response.PageResponse;
 import com.example.backend_java.domain.response.ResponseResponse;
 import com.example.backend_java.repository.LyDoRepository;
@@ -36,32 +37,40 @@ public class LyDoServiceImpl implements LyDoService {
 
     @Override
     public ResponseEntity<?> listCha(Integer id_cha) {
-        List<LyDoEntity> list = lyDoRepository.findById_cha(id_cha);
-        ArrayList<LyDoDto> getAll = new ArrayList<>();
-        for (LyDoEntity entity : list) {
-            LyDoDto r = new LyDoDto();
-            r.fromEntity(entity);
-            getAll.add(r);
+        try {
+            List<LyDoEntity> list = lyDoRepository.findById_cha(id_cha);
+            ArrayList<LyDoDto> getAll = new ArrayList<>();
+            for (LyDoEntity entity : list) {
+                LyDoDto r = new LyDoDto();
+                r.fromEntity(entity);
+                getAll.add(r);
+            }
+            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, getAll));
+        } catch (Throwable ex) {
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Danh sách lý do cha lỗi"));
         }
-        return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, getAll));
     }
 
     @Override
     public ResponseEntity<?> getPage(Integer index, Integer size, String lyDo, Integer idCha) {
-        Pageable pageable = PageRequest.of(index - 1, size, Sort.by("id").descending());
-        Page<LyDoEntity> page = lyDoRepository.search(lyDo,idCha,pageable);
-        ArrayList<LyDoDto> list = new ArrayList<LyDoDto>();
-        for (LyDoEntity entity : page.getContent()) {
-            String LyDoCha = null;
-            if(entity.getId_cha() != 0){
-                Optional<LyDoEntity> lydo = lyDoRepository.findById(Long.valueOf(entity.getId_cha()));
-                LyDoCha = lydo.get().getLyDo();
+        try {
+            Pageable pageable = PageRequest.of(index - 1, size, Sort.by("id").descending());
+            Page<LyDoEntity> page = lyDoRepository.search(lyDo, idCha, pageable);
+            ArrayList<LyDoDto> list = new ArrayList<LyDoDto>();
+            for (LyDoEntity entity : page.getContent()) {
+                String LyDoCha = null;
+                if (entity.getId_cha() != 0) {
+                    Optional<LyDoEntity> lydo = lyDoRepository.findById(Long.valueOf(entity.getId_cha()));
+                    LyDoCha = lydo.get().getLyDo();
+                }
+                list.add(new LyDoDto(entity.getId(), entity.getLyDo(), LyDoCha, entity.getHuongLuong(), entity.isStatus(),
+                        entity.getNguoiTao(), entity.getNguoiSua(), TimeUtil.toHHmmDDMMyyyy(entity.getNgayTao()), TimeUtil.toHHmmDDMMyyyy((entity.getNgaySua()))));
             }
-            list.add(new LyDoDto(entity.getId(),entity.getLyDo(),LyDoCha,entity.getHuongLuong(),entity.isStatus(),
-                    entity.getNguoiTao(),entity.getNguoiSua(), TimeUtil.toHHmmDDMMyyyy(entity.getNgayTao()),TimeUtil.toHHmmDDMMyyyy((entity.getNgaySua()))));
+            PageResponse<LyDoDto> data = new PageResponse(index, size, page.getTotalElements(), list);
+            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, data));
+        } catch (Throwable ex) {
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Phân trang lý do lỗi"));
         }
-        PageResponse<LyDoDto> data = new PageResponse(index, size, page.getTotalElements(),list);
-        return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, data));
     }
 
 
@@ -76,10 +85,10 @@ public class LyDoServiceImpl implements LyDoService {
             entity.setHuongLuong(reason.getHuongLuong());
             entity.setNguoiTao(userEntity.getHoTen());
             lyDoRepository.save(entity);
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Thêm thành công"));
+            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Thêm lý do thành công"));
 
-        } catch (Exception e) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "System busy"));
+        } catch (Throwable ex) {
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Thêm lý do lỗi"));
         }
     }
 
@@ -87,9 +96,9 @@ public class LyDoServiceImpl implements LyDoService {
     public ResponseEntity<?> updateLyDo(HttpServletRequest request, LyDoRequest reason, Long id) {
         try {
             UserEntity userEntity = jwtUtils.getUserEntity(request);
-            LyDoEntity entity = lyDoRepository.findById(id).orElse(null) ;
+            LyDoEntity entity = lyDoRepository.findById(id).orElse(null);
             if (entity == null) {
-                return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
+                return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
             }
             entity.setId_cha(reason.getId_cha());
             entity.setLyDo(reason.getLyDo());
@@ -97,23 +106,23 @@ public class LyDoServiceImpl implements LyDoService {
             entity.setHuongLuong(reason.getHuongLuong());
             entity.setNguoiSua(userEntity.getHoTen());
             lyDoRepository.save(entity);
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Sửa thành công"));
+            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Sửa lý do thành công"));
         } catch (Throwable ex) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "System busy"));
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Sửa lý do lỗi"));
         }
     }
 
     @Override
     public ResponseEntity<?> deleteLyDo(Long id) {
         try {
-            LyDoEntity entity = lyDoRepository.findById(id).orElse(null) ;
+            LyDoEntity entity = lyDoRepository.findById(id).orElse(null);
             if (entity == null) {
-                return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
+                return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
             }
             lyDoRepository.delete(entity);
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Xóa thành công"));
+            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Xóa lý do thành công"));
         } catch (Throwable ex) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "System busy"));
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Xóa lý do lỗi"));
         }
     }
 

@@ -31,4 +31,6 @@ public interface UserService {
     void exportFile(HttpServletResponse response) throws IOException;
 
     ResponseEntity<?> getUser(Long id);
+
+    ResponseEntity<?> getList(HttpServletRequest request);
 }

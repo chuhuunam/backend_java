@@ -2,7 +2,7 @@ package com.example.backend_java.controller;
 
 import com.example.backend_java.constant.Constant;
 import com.example.backend_java.domain.request.PhongBanRequest;
-import com.example.backend_java.domain.response.ResponseResponse;
+import com.example.backend_java.domain.response.ErrResponse;
 import com.example.backend_java.service.PhongBanService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -48,7 +48,7 @@ public class API4_PhongBan extends _BaseController {
     public ResponseEntity<?> create(HttpServletRequest request,
                                     @RequestBody PhongBanRequest department) {
         if (request == null) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Department invalid"));
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Vui lòng nhập đầy đủ thông tin"));
         } else {
             ResponseEntity<?> response = department.validate();
             if (response == null) {
@@ -66,7 +66,7 @@ public class API4_PhongBan extends _BaseController {
                                     @PathVariable(value = "id") Long id) {
         logger.info("=> update phòng ban");
         if (request == null || id < 0) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Id Department invalid"));
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Vui lòng nhập đầy đủ thông tin"));
         } else {
             ResponseEntity<?> response = department.validate();
             if (response == null) {
@@ -83,7 +83,7 @@ public class API4_PhongBan extends _BaseController {
             @PathVariable(value = "id") Long id) {
         logger.info("=>delete phòng ban");
         if (id < 0) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Id Department invalid"));
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Vui lòng nhập đầy đủ thông tin"));
         } else {
             return phongBanService.deleteDepartment(id);
         }

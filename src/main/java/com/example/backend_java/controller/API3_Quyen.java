@@ -2,6 +2,7 @@ package com.example.backend_java.controller;
 
 import com.example.backend_java.constant.Constant;
 import com.example.backend_java.domain.request.RoleRequest;
+import com.example.backend_java.domain.response.ErrResponse;
 import com.example.backend_java.domain.response.ResponseResponse;
 import com.example.backend_java.service.RoleService;
 import io.swagger.annotations.Api;
@@ -14,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping("/api/role")
 @Api(value = "API_3", description = "Phân quyền", tags = {"API_3"})
-public class API3_Quyen extends _BaseController{
+public class API3_Quyen extends _BaseController {
 
     private final RoleService roleService;
 
@@ -33,7 +34,7 @@ public class API3_Quyen extends _BaseController{
     public ResponseEntity<?> create(HttpServletRequest request,
                                     @RequestBody RoleRequest role) {
         if (request == null) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Role invalid"));
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Vui lòng nhập đầy đủ thông tin"));
         } else {
             ResponseEntity<?> response = role.validate();
             if (response == null) {
@@ -51,7 +52,7 @@ public class API3_Quyen extends _BaseController{
                                     @PathVariable(value = "id") Long id) {
         logger.info("=> update phân quyền");
         if (request == null) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Id Role invalid"));
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Vui lòng nhập đầy đủ thông tin"));
         } else {
             ResponseEntity<?> response = role.validate();
             if (response == null) {
@@ -68,7 +69,7 @@ public class API3_Quyen extends _BaseController{
             @PathVariable(value = "id") Long id) {
         logger.info("=>delete phân quyền");
         if (id == null) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Id Role invalid"));
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Vui lòng nhập đầy đủ thông tin"));
         } else {
             return roleService.deleteRole(id);
         }

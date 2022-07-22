@@ -2,7 +2,7 @@ package com.example.backend_java.controller;
 
 import com.example.backend_java.constant.Constant;
 import com.example.backend_java.domain.request.HopDongRequest;
-import com.example.backend_java.domain.response.ResponseResponse;
+import com.example.backend_java.domain.response.ErrResponse;
 import com.example.backend_java.service.HopDongService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -17,13 +17,14 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/api/contract")
 @Api(value = "API_8", description = "Hợp đồng", tags = {"API_8"})
-public class API8_HopDong extends _BaseController{
+public class API8_HopDong extends _BaseController {
 
     private final HopDongService hopDongService;
 
     public API8_HopDong(HopDongService hopDongService) {
         this.hopDongService = hopDongService;
     }
+
     @GetMapping("/page")
     @ApiOperation(value = "Danh sách hợp đồng phân trang")
     public ResponseEntity<?> list(
@@ -39,7 +40,7 @@ public class API8_HopDong extends _BaseController{
             @ApiParam(value = "0 là bảo hiểm hết hạn,1 ngược lại") Integer status) {
         Integer index = validPageIndex(pageIndex);
         Integer size = validPageSize(pageSize);
-        return hopDongService.getPage(tenNhanVien,maLoaiHopDong,status,index, size);
+        return hopDongService.getPage(tenNhanVien, maLoaiHopDong, status, index, size);
     }
 
     @PostMapping("")
@@ -47,7 +48,7 @@ public class API8_HopDong extends _BaseController{
     public ResponseEntity<?> create(HttpServletRequest request,
                                     @RequestBody HopDongRequest hopdong) {
         if (request == null) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Hợp đồng invalid"));
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Vui lòng nhập đầy đủ thông tin"));
         } else {
             ResponseEntity<?> response = hopdong.validate();
             if (response == null) {
@@ -57,6 +58,7 @@ public class API8_HopDong extends _BaseController{
             return response;
         }
     }
+
     @PutMapping("{id}")
     @ApiOperation(value = "Sửa hợp đồng")
     public ResponseEntity<?> update(HttpServletRequest request,
@@ -64,7 +66,7 @@ public class API8_HopDong extends _BaseController{
                                     @PathVariable(value = "id") Long id) {
         logger.info("=> update hợp đồng");
         if (request == null) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Id Hợp đồng invalid"));
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Vui lòng nhập đầy đủ thông tin"));
         } else {
             ResponseEntity<?> response = req.validate();
             if (response == null) {
@@ -81,7 +83,7 @@ public class API8_HopDong extends _BaseController{
             @PathVariable(value = "id") Long id) {
         logger.info("=>delete hợp đồng");
         if (id == null) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Id Hợp đồng invalid"));
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Vui lòng nhập đầy đủ thông tin"));
         } else {
             return hopDongService.deleteHopDong(id);
         }

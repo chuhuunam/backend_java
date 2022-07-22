@@ -3,6 +3,7 @@ package com.example.backend_java.controller;
 import com.example.backend_java.constant.Constant;
 import com.example.backend_java.domain.request.LoginRequest;
 import com.example.backend_java.domain.request.LogoutRequest;
+import com.example.backend_java.domain.response.ErrResponse;
 import com.example.backend_java.domain.response.ResponseResponse;
 import com.example.backend_java.service.AuthService;
 import io.swagger.annotations.Api;
@@ -32,7 +33,7 @@ public class API1_Auth extends _BaseController {
            @RequestBody LoginRequest login) {
         logger.info("=>login req: {}",login);
         if (login == null) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Login invalid"));
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Vui lòng nhập đầy đủ thông tin"));
         } else {
             ResponseEntity<?> response = login.validate();
             if (response == null) {
@@ -48,7 +49,7 @@ public class API1_Auth extends _BaseController {
                                     @RequestBody LogoutRequest logout) {
         logger.info("=>login req: {}",logout);
         if (logout == null) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Login invalid"));
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Vui lòng nhập đầy đủ thông tin"));
         } else {
             ResponseEntity<?> response = logout.validate();
             if (response == null) {

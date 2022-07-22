@@ -6,6 +6,7 @@ import com.example.backend_java.domain.entity.HopDongEntity;
 import com.example.backend_java.domain.entity.LoaiHopDongEntity;
 import com.example.backend_java.domain.entity.UserEntity;
 import com.example.backend_java.domain.request.HopDongRequest;
+import com.example.backend_java.domain.response.ErrResponse;
 import com.example.backend_java.domain.response.PageResponse;
 import com.example.backend_java.domain.response.ResponseResponse;
 import com.example.backend_java.repository.ChucVuRepository;
@@ -57,13 +58,14 @@ public class HopDongServiceImpl implements HopDongService {
         Cell cell = row.createCell(columnCount);
         if (value instanceof Integer) {
             cell.setCellValue((Integer) value);
-        }if (value instanceof Float) {
+        }
+        if (value instanceof Float) {
             cell.setCellValue((Float) value);
         } else if (value instanceof Boolean) {
             cell.setCellValue((Boolean) value);
-        }else if (value instanceof Long) {
+        } else if (value instanceof Long) {
             cell.setCellValue((Long) value);
-        }else {
+        } else {
             cell.setCellValue((String) value);
         }
         cell.setCellStyle(style);
@@ -71,16 +73,20 @@ public class HopDongServiceImpl implements HopDongService {
 
     @Override
     public ResponseEntity<?> getPage(String tenNhanVien, Integer maLoaiHopDong, Integer status, Integer index, Integer size) {
-        Integer offset = (index - 1) * size;
-        List<Object[]> page = hopDongRepository.getHopDong(tenNhanVien,maLoaiHopDong,status,offset,size);
-        ArrayList<HopDongDTO> list = new ArrayList<>();
-        for (Object[] entity : page) {
-            LoaiHopDongEntity loaihd = loaiHopDongRepository.Name((BigInteger) entity[2]);
-            list.add(new HopDongDTO(entity[0],entity[1],loaihd.getTenHopDong(),entity[3],entity[4],entity[5],entity[6],
-                    entity[7],entity[8],(Float) entity[9],entity[10], (Boolean) entity[11],entity[12],loaihd.getBaoHiem()));
+        try {
+            Integer offset = (index - 1) * size;
+            List<Object[]> page = hopDongRepository.getHopDong(tenNhanVien, maLoaiHopDong, status, offset, size);
+            ArrayList<HopDongDTO> list = new ArrayList<>();
+            for (Object[] entity : page) {
+                LoaiHopDongEntity loaihd = loaiHopDongRepository.Name((BigInteger) entity[2]);
+                list.add(new HopDongDTO(entity[0], entity[1], loaihd.getTenHopDong(), entity[3], entity[4], entity[5], entity[6],
+                        entity[7], entity[8], (Float) entity[9], entity[10], (Boolean) entity[11], entity[12], loaihd.getBaoHiem()));
+            }
+            PageResponse<HopDongEntity> data = new PageResponse(index, size, (long) page.size(), list);
+            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, data));
+        } catch (Throwable ex) {
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Phân trang hợp đồng lỗi"));
         }
-        PageResponse<HopDongEntity> data = new PageResponse(index, size, (long) page.size(), list);
-        return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, data));
     }
 
     @Override
@@ -88,19 +94,19 @@ public class HopDongServiceImpl implements HopDongService {
         try {
             UserEntity userEntity = jwtUtils.getUserEntity(request);
             List<HopDongEntity> check = hopDongRepository.checkCreate(hopdong.getId_user());
-            if (check == null){
+            if (check == null) {
                 HopDongEntity entity = new HopDongEntity();
                 Integer stt = hopDongRepository.getId();
-                if (stt == null){
-                    stt =1;
-                }else {
-                    stt = stt+1;
+                if (stt == null) {
+                    stt = 1;
+                } else {
+                    stt = stt + 1;
                 }
                 LoaiHopDongEntity loaihopdong = loaiHopDongRepository.findById(Long.valueOf(hopdong.getId_loai_hop_dong())).get();
                 entity.setLoaihopdong(loaihopdong);
                 UserEntity user = userRepository.findById(Long.valueOf(hopdong.getId_user())).get();
                 entity.setNguoidung(user);
-                entity.setMaHopDong("HD_"+stt);
+                entity.setMaHopDong("HD_" + stt);
                 entity.setNgayKy(hopdong.getNgayKy());
                 entity.setNgayHieuLuc(hopdong.getNgayHieuLuc());
                 entity.setNgayKetThuc(hopdong.getNgayKetThuc());
@@ -109,12 +115,12 @@ public class HopDongServiceImpl implements HopDongService {
                 entity.setMoTa(hopdong.getMoTa());
                 entity.setNguoiTao(userEntity.getHoTen());
                 hopDongRepository.save(entity);
-                return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Thêm thành công"));
-            }else {
-                return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Nhân viên vẫn còn hợp đồng"));
+                return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Thêm hợp đồng thành công"));
+            } else {
+                return ResponseEntity.ok(new ErrResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Nhân viên vẫn còn hợp đồng"));
             }
         } catch (Exception e) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "System busy"));
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Thêm hợp đồng lỗi"));
         }
     }
 
@@ -122,9 +128,9 @@ public class HopDongServiceImpl implements HopDongService {
     public ResponseEntity<?> updateHopDong(HttpServletRequest request, HopDongRequest req, Long id) {
         try {
             UserEntity userEntity = jwtUtils.getUserEntity(request);
-            HopDongEntity entity = hopDongRepository.findById(id).orElse(null) ;
+            HopDongEntity entity = hopDongRepository.findById(id).orElse(null);
             if (entity == null) {
-                return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
+                return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
             }
             LoaiHopDongEntity loaihopdong = loaiHopDongRepository.findById(Long.valueOf(req.getId_loai_hop_dong())).get();
             entity.setLoaihopdong(loaihopdong);
@@ -137,23 +143,23 @@ public class HopDongServiceImpl implements HopDongService {
             entity.setMoTa(req.getMoTa());
             entity.setNguoiSua(userEntity.getHoTen());
             hopDongRepository.save(entity);
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Sửa thành công"));
+            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Sửa hợp đồng thành công"));
         } catch (Throwable ex) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "System busy"));
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Sửa hợp đồng lỗi"));
         }
     }
 
     @Override
     public ResponseEntity<?> deleteHopDong(Long id) {
         try {
-            HopDongEntity entity = hopDongRepository.findById(id).orElse(null) ;
+            HopDongEntity entity = hopDongRepository.findById(id).orElse(null);
             if (entity == null) {
-                return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
+                return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
             }
             hopDongRepository.delete(entity);
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Xóa thành công"));
+            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Xóa hợp đồng thành công"));
         } catch (Throwable ex) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "System busy"));
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Xóa hợp đồng lỗi"));
         }
     }
 
@@ -187,6 +193,7 @@ public class HopDongServiceImpl implements HopDongService {
         workbook.close();
         outputStream.close();
     }
+
     private void writeHeaderLine(XSSFWorkbook workbook, XSSFSheet sheet) {
         Row row = sheet.createRow(0);
         XSSFFont font = workbook.createFont();
@@ -197,17 +204,17 @@ public class HopDongServiceImpl implements HopDongService {
         createCell(sheet, row, 0, "STT", style);
         createCell(sheet, row, 1, "Họ và Tên", style);
         createCell(sheet, row, 2, "Mã hợp đồng", style);
-        createCell(sheet, row, 3,"Tên hợp đồng", style);
-        createCell(sheet, row, 4,"Tên chức vụ", style);
+        createCell(sheet, row, 3, "Tên hợp đồng", style);
+        createCell(sheet, row, 4, "Tên chức vụ", style);
         createCell(sheet, row, 5, "Tên phòng ban ", style);
-        createCell(sheet, row, 6,"Ngày ký", style);
+        createCell(sheet, row, 6, "Ngày ký", style);
         createCell(sheet, row, 7, "Ngày hiệu lực", style);
-        createCell(sheet, row, 8,"Ngày kết thúc", style);
+        createCell(sheet, row, 8, "Ngày kết thúc", style);
         createCell(sheet, row, 9, "Lương", style);
-        createCell(sheet, row, 10,"Thời hạn", style);
+        createCell(sheet, row, 10, "Thời hạn", style);
         createCell(sheet, row, 11, "Trạng thái hợp đồng", style);
         createCell(sheet, row, 12, "Bảo hiểm", style);
-        createCell(sheet, row, 13,"Mô tả", style);
+        createCell(sheet, row, 13, "Mô tả", style);
     }
 
     private void writeDataLines(XSSFWorkbook workbook, XSSFSheet sheet) {
@@ -230,8 +237,8 @@ public class HopDongServiceImpl implements HopDongService {
             createCell(sheet, row, columnCount++, entity[8], style);
             String thoiHan = String.valueOf(entity[9]);
             createCell(sheet, row, columnCount++, thoiHan, style);
-            String trangThai = String.valueOf(entity[10]) == "true" ? "Còn thời hạn":"Hết thời hạn";
-            createCell(sheet, row, columnCount++,trangThai, style);
+            String trangThai = String.valueOf(entity[10]) == "true" ? "Còn thời hạn" : "Hết thời hạn";
+            createCell(sheet, row, columnCount++, trangThai, style);
             String baoHiem = loaihd.getBaoHiem() == 1 ? "Có" : "Không có";
             createCell(sheet, row, columnCount++, baoHiem, style);
             createCell(sheet, row, columnCount++, entity[11], style);

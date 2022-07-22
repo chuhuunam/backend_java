@@ -1,7 +1,7 @@
 package com.example.backend_java.domain.request;
 
 import com.example.backend_java.constant.Constant;
-import com.example.backend_java.domain.response.ResponseResponse;
+import com.example.backend_java.domain.response.ErrResponse;
 import com.google.common.base.Strings;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -15,13 +15,13 @@ public class LoginRequest {
     private String matKhau;
 
     public ResponseEntity<?> validate() {
-        if(Strings.isNullOrEmpty(taiKhoan)){
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chưa nhập username"));
+        if (Strings.isNullOrEmpty(taiKhoan)) {
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chưa nhập username"));
         }
-        if(Strings.isNullOrEmpty(matKhau)){
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chưa nhập password"));
+        if (Strings.isNullOrEmpty(matKhau)) {
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chưa nhập password"));
         }
-        return null ;
+        return null;
     }
 
 }

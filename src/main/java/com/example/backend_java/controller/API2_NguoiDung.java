@@ -5,7 +5,7 @@ import com.example.backend_java.domain.request.PasswordRequest;
 import com.example.backend_java.domain.request.StatusRequest;
 import com.example.backend_java.domain.request.UserRequest;
 import com.example.backend_java.domain.request.updateDepRequest;
-import com.example.backend_java.domain.response.ResponseResponse;
+import com.example.backend_java.domain.response.ErrResponse;
 import com.example.backend_java.service.UserService;
 import com.google.common.base.Strings;
 import io.swagger.annotations.Api;
@@ -22,7 +22,7 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/api/user")
 @Api(value = "API_2", description = "Nhân viên", tags = {"API_2"})
-public class API2_NguoiDung extends _BaseController{
+public class API2_NguoiDung extends _BaseController {
 
     private final UserService userService;
 
@@ -34,24 +34,34 @@ public class API2_NguoiDung extends _BaseController{
     @ApiOperation(value = "Danh sách nhân viên phân trang")
     public ResponseEntity<?> list(HttpServletRequest request,
                                   @RequestParam(required = false, name = "page_index")
-            @ApiParam(value = "Trang cần lấy (tính từ 1). Mặc định 1") Integer pageIndex,
+                                  @ApiParam(value = "Trang cần lấy (tính từ 1). Mặc định 1") Integer pageIndex,
                                   @RequestParam(required = false, name = "page_size")
-            @ApiParam(value = "Số bản ghi cho 1 trang (nhỏ nhất 1; lớn nhất 50). Mặc định 10") Integer pageSize,
+                                  @ApiParam(value = "Số bản ghi cho 1 trang (nhỏ nhất 1; lớn nhất 50). Mặc định 10") Integer pageSize,
                                   @RequestParam(required = false, name = "keyword")
-                                      @ApiParam(value = "Nhập mã nhân viên, tên, cmt,...") String keyword,
+                                  @ApiParam(value = "Nhập mã nhân viên, tên, cmt,...") String keyword,
                                   @RequestParam(required = false, name = "id_phong_ban")
-                                      @ApiParam(value = "Nhập id_phong_ban") Integer idPhongBan,
+                                  @ApiParam(value = "Nhập id_phong_ban") Integer idPhongBan,
                                   @RequestParam(required = false, name = "idChucVu")
-                                      @ApiParam(value = "Nhập idChucVu") Integer idChucVu) {
+                                  @ApiParam(value = "Nhập idChucVu") Integer idChucVu) {
         Integer index = validPageIndex(pageIndex);
         Integer size = validPageSize(pageSize);
-        return userService.getPageUser(request,keyword,idPhongBan,idChucVu,index, size);
+        return userService.getPageUser(request, keyword, idPhongBan, idChucVu, index, size);
     }
+
     @GetMapping("/{id}")
     @ApiOperation(value = "Chi tiết nhân viên")
     public ResponseEntity<?> listUserId(@RequestParam(required = false, name = "id")
-            @ApiParam(value = "Id") Long id){
+                                        @ApiParam(value = "Id") Long id) {
+        if (id == null) {
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Vui lòng nhập đầy đủ thông tin"));
+        }
         return userService.getUser(id);
+    }
+
+    @GetMapping("/vetifytoken")
+    @ApiOperation(value = "User đăng nhập")
+    public ResponseEntity<?> vetifytoken(HttpServletRequest request) {
+        return userService.getList(request);
     }
 
 
@@ -60,7 +70,7 @@ public class API2_NguoiDung extends _BaseController{
     public ResponseEntity<?> create(HttpServletRequest request,
                                     @RequestBody UserRequest user) throws MessagingException {
         if (request == null) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Role invalid"));
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Vui lòng nhập đầy đủ thông tin"));
         } else {
             logger.info("<=create nhân viên resp: {}", "ok");
             return userService.createUser(request, user);
@@ -74,7 +84,7 @@ public class API2_NguoiDung extends _BaseController{
                                     @PathVariable(value = "id") Long id) {
         logger.info("=> update nhân viên");
         if (request == null) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Id Role invalid"));
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Vui lòng nhập đầy đủ thông tin"));
         } else {
             logger.info("<=update nhân viên resp: {}", "ok");
             return userService.updateUser(request, user, id);
@@ -87,11 +97,12 @@ public class API2_NguoiDung extends _BaseController{
             @PathVariable(value = "id") Long id) {
         logger.info("=>delete nhân viên");
         if (id == null) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Id Role invalid"));
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Vui lòng nhập đầy đủ thông tin"));
         } else {
             return userService.deleteUser(id);
         }
     }
+
     @PutMapping("updatePassword/{id}")
     @ApiOperation(value = "Sửa tài khoản người dùng")
     public ResponseEntity<?> updatePassword(HttpServletRequest request,
@@ -99,13 +110,15 @@ public class API2_NguoiDung extends _BaseController{
                                             @PathVariable(value = "id") Long id) {
         logger.info("=> update pass người dùng");
         if (request == null || id < 0) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Id Department invalid"));
-        }if(Strings.isNullOrEmpty(passwordRequest.getMat_khau())){
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chưa nhập password"));
-        }else {
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Vui lòng nhập đầy đủ thông tin"));
+        }
+        if (Strings.isNullOrEmpty(passwordRequest.getMat_khau())) {
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Bạn chưa nhập mật khẩu"));
+        } else {
             return userService.updatePassword(request, passwordRequest, id);
         }
     }
+
     @PutMapping("updateStatus/{id}")
     @ApiOperation(value = "Sửa trạng thái người dùng")
     public ResponseEntity<?> updateStatus(HttpServletRequest request,
@@ -113,8 +126,8 @@ public class API2_NguoiDung extends _BaseController{
                                           @PathVariable(value = "id") Long id) {
         logger.info("=> update pass người dùng");
         if (request == null || id < 0) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Id Department invalid"));
-        }else {
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Vui lòng nhập đầy đủ thông tin"));
+        } else {
             return userService.updateStatus(request, status, id);
         }
     }
@@ -126,11 +139,12 @@ public class API2_NguoiDung extends _BaseController{
                                               @PathVariable(value = "id") Long id) {
         logger.info("=> update pass người dùng");
         if (request == null || id < 0) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Id Department invalid"));
-        }else {
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Vui lòng nhập đầy đủ thông tin"));
+        } else {
             return userService.updateDepartment(request, department, id);
         }
     }
+
     @GetMapping("/export_file")
     @ApiOperation(value = "Xuất file")
     public void exportFile(HttpServletResponse response) throws IOException {

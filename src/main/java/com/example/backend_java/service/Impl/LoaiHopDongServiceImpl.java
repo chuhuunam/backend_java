@@ -5,6 +5,7 @@ import com.example.backend_java.domain.dto.LoaiHopDongDto;
 import com.example.backend_java.domain.entity.LoaiHopDongEntity;
 import com.example.backend_java.domain.entity.UserEntity;
 import com.example.backend_java.domain.request.LoaiHopDongRequest;
+import com.example.backend_java.domain.response.ErrResponse;
 import com.example.backend_java.domain.response.PageResponse;
 import com.example.backend_java.domain.response.ResponseResponse;
 import com.example.backend_java.repository.LoaiHopDongRepository;
@@ -34,14 +35,18 @@ public class LoaiHopDongServiceImpl implements LoaiHopDongService {
 
     @Override
     public ResponseEntity<?> getAll() {
-        List<LoaiHopDongEntity> list = loaiHopDongRepository.findAll();
-        ArrayList<LoaiHopDongDto> getAll = new ArrayList<>();
-        for (LoaiHopDongEntity entity : list) {
-            LoaiHopDongDto r = new LoaiHopDongDto();
-            r.fromEntity(entity);
-            getAll.add(r);
+        try {
+            List<LoaiHopDongEntity> list = loaiHopDongRepository.findAll();
+            ArrayList<LoaiHopDongDto> getAll = new ArrayList<>();
+            for (LoaiHopDongEntity entity : list) {
+                LoaiHopDongDto r = new LoaiHopDongDto();
+                r.fromEntity(entity);
+                getAll.add(r);
+            }
+            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, getAll));
+        } catch (Throwable ex) {
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Danh sách loại hợp đồng lỗi"));
         }
-        return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, getAll));
     }
 
     @Override
@@ -54,10 +59,9 @@ public class LoaiHopDongServiceImpl implements LoaiHopDongService {
             entity.setStatus(true);
             entity.setNguoiTao(userEntity.getHoTen());
             loaiHopDongRepository.save(entity);
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Thêm thành công"));
-
+            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Thêm loại hợp đồng thành công"));
         } catch (Exception e) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "System busy"));
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Thêm loại hợp đồng lỗi"));
         }
     }
 
@@ -65,47 +69,53 @@ public class LoaiHopDongServiceImpl implements LoaiHopDongService {
     public ResponseEntity<?> updateTypeContract(HttpServletRequest request, LoaiHopDongRequest req, Long id) {
         try {
             UserEntity userEntity = jwtUtils.getUserEntity(request);
-            LoaiHopDongEntity entity = loaiHopDongRepository.findById(id).orElse(null) ;
+            LoaiHopDongEntity entity = loaiHopDongRepository.findById(id).orElse(null);
             if (entity == null) {
-                return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
+                return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
             }
             entity.setTenHopDong(req.getTenHopDong());
             entity.setBaoHiem(req.getBaoHiem());
             entity.setStatus(req.isStatus());
             entity.setNguoiSua(userEntity.getHoTen());
             loaiHopDongRepository.save(entity);
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Sửa thành công"));
+            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Sửa loại hợp đồng thành công"));
         } catch (Throwable ex) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "System busy"));
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Sửa loại hợp đồng lỗi"));
+
         }
     }
 
     @Override
     public ResponseEntity<?> deleteTypeContract(Long id) {
         try {
-            LoaiHopDongEntity entity = loaiHopDongRepository.findById(id).orElse(null) ;
+            LoaiHopDongEntity entity = loaiHopDongRepository.findById(id).orElse(null);
             if (entity == null) {
-                return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
+                return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
             }
             loaiHopDongRepository.delete(entity);
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Xóa thành công"));
+            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Xóa loại hợp đồng thành công"));
         } catch (Throwable ex) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "System busy"));
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Xóa loại hợp đồng lỗi"));
+
         }
     }
 
     @Override
     public ResponseEntity<?> getPage(Integer index, Integer size, String tenHopDong, String loaiHopDong, Integer baoHiem) {
-        Page<LoaiHopDongEntity> page;
-        Pageable pageable = PageRequest.of(index - 1, size, Sort.by("id").descending());
-            page = loaiHopDongRepository.search(tenHopDong,loaiHopDong,baoHiem,pageable);
-        ArrayList<LoaiHopDongDto> list = new ArrayList<>();
-        for (LoaiHopDongEntity entity : page.getContent()) {
-            LoaiHopDongDto r = new LoaiHopDongDto();
-            r.fromEntity(entity);
-            list.add(r);
+        try {
+            Page<LoaiHopDongEntity> page;
+            Pageable pageable = PageRequest.of(index - 1, size, Sort.by("id").descending());
+            page = loaiHopDongRepository.search(tenHopDong, loaiHopDong, baoHiem, pageable);
+            ArrayList<LoaiHopDongDto> list = new ArrayList<>();
+            for (LoaiHopDongEntity entity : page.getContent()) {
+                LoaiHopDongDto r = new LoaiHopDongDto();
+                r.fromEntity(entity);
+                list.add(r);
+            }
+            PageResponse<LoaiHopDongDto> data = new PageResponse(index, size, page.getTotalElements(), list);
+            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, data));
+        } catch (Throwable ex) {
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Phân trang loại hợp đồng lỗi"));
         }
-        PageResponse<LoaiHopDongDto> data = new PageResponse(index, size, page.getTotalElements(), list);
-        return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, data));
     }
 }
