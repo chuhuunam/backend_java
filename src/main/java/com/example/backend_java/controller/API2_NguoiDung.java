@@ -112,7 +112,7 @@ public class API2_NguoiDung extends _BaseController {
         if (request == null || id < 0) {
             return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Vui lòng nhập đầy đủ thông tin"));
         }
-        if (Strings.isNullOrEmpty(passwordRequest.getMat_khau())) {
+        if (Strings.isNullOrEmpty(passwordRequest.getPassword())) {
             return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Bạn chưa nhập mật khẩu"));
         } else {
             return userService.updatePassword(request, passwordRequest, id);
