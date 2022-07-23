@@ -17,10 +17,10 @@ public class ErrResponse<T> implements Serializable {
         this.msg = msg;
     }
 
-    public ErrResponse(int status, String msg, T data) {
+    public ErrResponse(int status, String msg, T errMessage) {
         this.status = status;
         this.msg = msg;
-        this.errMessage = data;
+        this.errMessage = errMessage;
     }
 
     public int getStatus() {
@@ -39,12 +39,12 @@ public class ErrResponse<T> implements Serializable {
         this.msg = msg;
     }
 
-    public T getData() {
+    public T getErrMessage() {
         return errMessage;
     }
 
-    public void setData(T data) {
-        this.errMessage = data;
+    public void setErrMessage(T errMessage) {
+        this.errMessage = errMessage;
     }
 }
 
