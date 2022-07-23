@@ -23,10 +23,10 @@ public class UserDto {
     private Object labor_nature;
     private Object type_contract;
     private Object insurance;
-    private Object effective_date;
-    private Object end_date;
+    private Object working_day;
+    private Object update_at;
 
-    public UserDto(Object id, Object id_user, Object name_user, Object sex, Object birthday, Object phone, Object email, Object avatar, Object address, Object cmt, boolean status, Object name_department, Object name_position, Object labor_nature, Object type_contract, Object insurance, Object effective_date, Object end_date) {
+    public UserDto(Object id, Object id_user, Object name_user, Object sex, Object birthday, Object phone, Object email, Object avatar, Object address, Object cmt, boolean status, Object name_department, Object name_position, Object labor_nature, Object type_contract, Object insurance, Object working_day, Object update_at) {
         this.id = id;
         this.id_user = id_user;
         this.name_user = name_user;
@@ -43,7 +43,7 @@ public class UserDto {
         this.labor_nature = labor_nature;
         this.type_contract = type_contract;
         this.insurance = insurance;
-        this.effective_date = TimeUtil.toDDMMyyyy((Timestamp)effective_date);
-        this.end_date = TimeUtil.toDDMMyyyy((Timestamp)end_date);
+        this.working_day = TimeUtil.toDDMMyyyy((Timestamp)working_day);
+        this.update_at = TimeUtil.toDDMMyyyy((Timestamp)update_at);
     }
 }
