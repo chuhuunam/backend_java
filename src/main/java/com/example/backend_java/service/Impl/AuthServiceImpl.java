@@ -79,7 +79,7 @@ public class AuthServiceImpl implements AuthService {
 
                 TokenEntity tokenEntity = new TokenEntity();
                 tokenEntity.setTaiKhoan(login.getTaiKhoan());
-                tokenEntity.setToken(jwtUtils.generateJwtToken(userDetails));
+                tokenEntity.setToken(jwt);
                 tokenEntity.setNgayHetHan(jwtUtils.generateExpirationDate());
                 tokenRepository.save(tokenEntity);
 
