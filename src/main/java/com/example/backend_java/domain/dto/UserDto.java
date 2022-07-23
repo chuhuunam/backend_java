@@ -8,42 +8,42 @@ import java.sql.Timestamp;
 @Data
 public class UserDto {
     private Object id;
-    private Object maNhanVien;
-    private Object hoTen;
-    private Object gioiTinh;
-    private Object ngaySinh;
-    private Object soDienThoai;
+    private Object id_user;
+    private Object name_user;
+    private Object sex;
+    private Object birthday;
+    private Object phone;
     private Object email;
-    private Object anhDaiDien;
-    private Object diaChi;
+    private Object avatar;
+    private Object address;
     private Object cmt;
     private boolean status;
-    private Object tenPhongBan;
-    private Object tenChucVu;
-    private Object tinhChatLaoDong;
-    private Object loaiHopDong;
-    private Object baoHiem;
-    private Object ngayHieuLuc;
-    private Object ngayKetThuc;
+    private Object name_department;
+    private Object name_position;
+    private Object labor_nature;
+    private Object type_contract;
+    private Object insurance;
+    private Object effective_date;
+    private Object end_date;
 
-    public UserDto(Object id, Object maNhanVien, Object hoTen, Object gioiTinh, Object ngaySinh, Object soDienThoai, Object email, Object anhDaiDien, Object diaChi, Object cmt, boolean status, Object tenPhongBan, Object tenChucVu, Object tinhChatLaoDong, Object loaiHopDong, Object baoHiem, Object ngayHieuLuc, Object ngayKetThuc) {
+    public UserDto(Object id, Object id_user, Object name_user, Object sex, Object birthday, Object phone, Object email, Object avatar, Object address, Object cmt, boolean status, Object name_department, Object name_position, Object labor_nature, Object type_contract, Object insurance, Object effective_date, Object end_date) {
         this.id = id;
-        this.maNhanVien = maNhanVien;
-        this.hoTen = hoTen;
-        this.gioiTinh = gioiTinh;
-        this.ngaySinh = TimeUtil.toDDMMyyyy((Timestamp) ngaySinh);
-        this.soDienThoai = soDienThoai;
+        this.id_user = id_user;
+        this.name_user = name_user;
+        this.sex = sex;
+        this.birthday = TimeUtil.toDDMMyyyy((Timestamp) birthday);
+        this.phone = phone;
         this.email = email;
-        this.anhDaiDien = anhDaiDien;
-        this.diaChi = diaChi;
+        this.avatar = avatar;
+        this.address = address;
         this.cmt = cmt;
         this.status = status;
-        this.tenPhongBan = tenPhongBan;
-        this.tenChucVu = tenChucVu;
-        this.tinhChatLaoDong = tinhChatLaoDong;
-        this.loaiHopDong = loaiHopDong;
-        this.baoHiem = baoHiem;
-        this.ngayHieuLuc = TimeUtil.toDDMMyyyy((Timestamp)ngayHieuLuc);
-        this.ngayKetThuc = TimeUtil.toDDMMyyyy((Timestamp)ngayKetThuc);
+        this.name_department = name_department;
+        this.name_position = name_position;
+        this.labor_nature = labor_nature;
+        this.type_contract = type_contract;
+        this.insurance = insurance;
+        this.effective_date = TimeUtil.toDDMMyyyy((Timestamp)effective_date);
+        this.end_date = TimeUtil.toDDMMyyyy((Timestamp)end_date);
     }
 }

@@ -59,11 +59,11 @@ public class AuthServiceImpl implements AuthService {
             UserEntity entity = userRepository.findByTaiKhoan(login.getTaiKhoan());
             BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
             if (entity == null) {
-                return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Tài khoản của bạn bị sai"));
+                return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Tài khoản không tồn tại"));
             } else if (!entity.isStatus()) {
                 return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Tài khoản bị khóa"));
             } else if (!bCryptPasswordEncoder.matches(decodeValue(login.getMatKhau()), entity.getMatKhau())) {
-                return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Mật khẩu của bạn bị sai"));
+                return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Mật khẩu sai"));
             } else {
 
                 tokenRepository.deleteTaiKhoan(login.getTaiKhoan());
@@ -79,7 +79,7 @@ public class AuthServiceImpl implements AuthService {
 
                 TokenEntity tokenEntity = new TokenEntity();
                 tokenEntity.setTaiKhoan(login.getTaiKhoan());
-                tokenEntity.setToken(jwt);
+                tokenEntity.setToken(jwtUtils.generateJwtToken(userDetails));
                 tokenEntity.setNgayHetHan(jwtUtils.generateExpirationDate());
                 tokenRepository.save(tokenEntity);
 
@@ -89,19 +89,4 @@ public class AuthServiceImpl implements AuthService {
             return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Đăng nhập thất bại"));
         }
     }
-
-    @Override
-    public ResponseEntity<?> logout(LogoutRequest logout) {
-        try {
-            TokenEntity entity = tokenRepository.findByToken(logout.getToken());
-            if (entity == null) {
-                return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy token"));
-            }
-            tokenRepository.delete(entity);
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Xóa thành công"));
-        } catch (Throwable ex) {
-            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Đăng xuất thất bại"));
-        }
-    }
-
 }

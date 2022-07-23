@@ -7,24 +7,24 @@ import lombok.Data;
 @Data
 public class RoleDto {
     private Long id;
-    private String maQuyen;
-    private String tenQuyen;
-    private String moTa;
+    private String id_role;
+    private String name_role;
+    private String describe;
     private boolean status;
-    protected String ngayTao;
-    protected String ngaySua;
-    protected String nguoiTao;
-    protected String nguoiSua;
+    protected String create_at;
+    protected String update_at;
+    protected String create_by;
+    protected String update_by;
 
     public void  fromEntity (RoleEntity entity) {
         this.id = entity.getId();
-        this.maQuyen = entity.getMaQuyen();
-        this.tenQuyen = entity.getTenQuyen();
-        this.moTa = entity.getMoTa();
+        this.id_role = entity.getMaQuyen();
+        this.name_role = entity.getTenQuyen();
+        this.describe = entity.getMoTa();
         this.status = entity.isStatus();
-        this.ngayTao = TimeUtil.toHHmmDDMMyyyy(entity.getNgayTao());
-        this.ngaySua = TimeUtil.toHHmmDDMMyyyy(entity.getNgaySua());
-        this.nguoiTao = entity.getNguoiTao();
-        this.nguoiSua = entity.getNguoiSua();
+        this.create_at = TimeUtil.toHHmmDDMMyyyy(entity.getNgayTao());
+        this.update_at = TimeUtil.toHHmmDDMMyyyy(entity.getNgaySua());
+        this.create_by = entity.getNguoiTao();
+        this.update_by = entity.getNguoiSua();
     }
 }

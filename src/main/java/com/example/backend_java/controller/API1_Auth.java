@@ -43,20 +43,20 @@ public class API1_Auth extends _BaseController {
             return response;
         }
     }
-    @PostMapping("/api/logout")
-    @ApiOperation(value = "Đăng xuất")
-    public ResponseEntity<?> logout(@ApiParam(value = "Đăng xuất theo token")
-                                    @RequestBody LogoutRequest logout) {
-        logger.info("=>login req: {}",logout);
-        if (logout == null) {
-            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Vui lòng nhập đầy đủ thông tin"));
-        } else {
-            ResponseEntity<?> response = logout.validate();
-            if (response == null) {
-                logger.info("<=logout  resp: {}", "success");
-                return authService.logout(logout);
-            }
-            return response;
-        }
-    }
+//    @PostMapping("/api/logout")
+//    @ApiOperation(value = "Đăng xuất")
+//    public ResponseEntity<?> logout(@ApiParam(value = "Đăng xuất theo token")
+//                                    @RequestBody LogoutRequest logout) {
+//        logger.info("=>login req: {}",logout);
+//        if (logout == null) {
+//            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Vui lòng nhập đầy đủ thông tin"));
+//        } else {
+//            ResponseEntity<?> response = logout.validate();
+//            if (response == null) {
+//                logger.info("<=logout  resp: {}", "success");
+//                return authService.logout(logout);
+//            }
+//            return response;
+//        }
+//    }
 }

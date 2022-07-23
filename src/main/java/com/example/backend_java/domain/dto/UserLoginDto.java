@@ -4,38 +4,36 @@ import com.example.backend_java.utils.TimeUtil;
 import lombok.Data;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 @Data
 public class UserLoginDto {
     private Object id;
-    private Object maNhanVien;
-    private Object hoTen;
-    private Object gioiTinh;
-    private Object ngaySinh;
-    private Object soDienThoai;
+    private Object id_user;
+    private Object full_name;
+    private Object sex;
+    private Object birthday;
+    private Object phone;
     private Object email;
-    private Object anhDaiDien;
-    private Object diaChi;
+    private Object avatar;
+    private Object address;
     private Object cmt;
-    private Object tenPhongBan;
-    private Object tenChucVu;
-    private Object quyen;
+    private Object name_department;
+    private Object name_position;
+    private Object role;
 
-    public UserLoginDto(Object id, Object maNhanVien, Object hoTen, Object gioiTinh, Object ngaySinh, Object soDienThoai, Object email, Object anhDaiDien, Object diaChi, Object cmt, Object tenPhongBan, Object tenChucVu, Object quyen) {
+    public UserLoginDto(Object id, Object id_user, Object full_name, Object sex, Object birthday, Object phone, Object email, Object avatar, Object address, Object cmt, Object name_department, Object name_position, Object role) {
         this.id = id;
-        this.maNhanVien = maNhanVien;
-        this.hoTen = hoTen;
-        this.gioiTinh = gioiTinh;
-        TimeUtil.toDDMMyyyy((Timestamp) ngaySinh);
-        this.soDienThoai = soDienThoai;
+        this.id_user = id_user;
+        this.full_name = full_name;
+        this.sex = sex;
+        this.birthday = TimeUtil.toDDMMyyyy((Timestamp)birthday);
+        this.phone = phone;
         this.email = email;
-        this.anhDaiDien = anhDaiDien;
-        this.diaChi = diaChi;
+        this.avatar = avatar;
+        this.address = address;
         this.cmt = cmt;
-        this.tenPhongBan = tenPhongBan;
-        this.tenChucVu = tenChucVu;
-        this.quyen = quyen;
+        this.name_department = name_department;
+        this.name_position = name_position;
+        this.role = role;
     }
-
 }

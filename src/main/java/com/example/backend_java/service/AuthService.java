@@ -10,6 +10,4 @@ import javax.servlet.http.HttpServletResponse;
 @Service
 public interface AuthService {
     ResponseEntity<?> login(HttpServletResponse request, LoginRequest login);
-
-    ResponseEntity<?> logout(LogoutRequest logout);
 }

@@ -7,24 +7,24 @@ import lombok.Data;
 @Data
 public class ChucVuDto {
     private Long id;
-    private String maChucVu;
-    private String tenChucVu;
-    private String moTa;
+    private String id_position;
+    private String name_position;
+    private String describe;
     private boolean status;
-    protected String ngayTao;
-    protected String ngaySua;
-    protected String nguoiTao;
-    protected String nguoiSua;
+    protected String create_at;
+    protected String update_at;
+    protected String create_by;
+    protected String update_by;
 
     public void  fromEntity (ChucVuEntity entity) {
         this.id = entity.getId();
-        this.maChucVu = entity.getMaChucVu();
-        this.tenChucVu = entity.getTenChucVu();
-        this.moTa = entity.getMoTa();
+        this.id_position = entity.getMaChucVu();
+        this.name_position = entity.getTenChucVu();
+        this.describe = entity.getMoTa();
         this.status = entity.isStatus();
-        this.ngayTao = TimeUtil.toHHmmDDMMyyyy(entity.getNgayTao());
-        this.ngaySua = TimeUtil.toHHmmDDMMyyyy(entity.getNgaySua());
-        this.nguoiTao = entity.getNguoiTao();
-        this.nguoiSua = entity.getNguoiSua();
+        this.create_at = TimeUtil.toHHmmDDMMyyyy(entity.getNgayTao());
+        this.update_at = TimeUtil.toHHmmDDMMyyyy(entity.getNgaySua());
+        this.create_by = entity.getNguoiTao();
+        this.update_by = entity.getNguoiSua();
     }
 }
