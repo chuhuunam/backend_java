@@ -56,20 +56,20 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ResponseEntity<?> login(HttpServletResponse request, LoginRequest login) {
         try {
-            UserEntity entity = userRepository.findByTaiKhoan(login.getTaiKhoan());
+            UserEntity entity = userRepository.findByTaiKhoan(login.getUsername());
             BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
             if (entity == null) {
                 return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Tài khoản không tồn tại"));
             } else if (!entity.isStatus()) {
                 return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Tài khoản bị khóa"));
-            } else if (!bCryptPasswordEncoder.matches(decodeValue(login.getMatKhau()), entity.getMatKhau())) {
+            } else if (!bCryptPasswordEncoder.matches(decodeValue(login.getPassword()), entity.getMatKhau())) {
                 return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Mật khẩu sai"));
             } else {
 
-                tokenRepository.deleteTaiKhoan(login.getTaiKhoan());
+                tokenRepository.deleteTaiKhoan(login.getUsername());
 
                 Authentication authentication = authenticationManager
-                        .authenticate(new UsernamePasswordAuthenticationToken(login.getTaiKhoan(), login.getMatKhau()));
+                        .authenticate(new UsernamePasswordAuthenticationToken(login.getUsername(), login.getPassword()));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
                 // tạo token
@@ -78,7 +78,7 @@ public class AuthServiceImpl implements AuthService {
                 request.addHeader(Config.HEADER_STRING, jwt);
 
                 TokenEntity tokenEntity = new TokenEntity();
-                tokenEntity.setTaiKhoan(login.getTaiKhoan());
+                tokenEntity.setTaiKhoan(login.getUsername());
                 tokenEntity.setToken(jwtUtils.generateJwtToken(userDetails));
                 tokenEntity.setNgayHetHan(jwtUtils.generateExpirationDate());
                 tokenRepository.save(tokenEntity);

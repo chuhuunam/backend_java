@@ -79,10 +79,10 @@ public class LyDoServiceImpl implements LyDoService {
         try {
             UserEntity userEntity = jwtUtils.getUserEntity(request);
             LyDoEntity entity = new LyDoEntity();
-            entity.setId_cha(reason.getId_cha());
-            entity.setLyDo(reason.getLyDo());
+            entity.setId_cha(reason.getId_father_reason());
+            entity.setLyDo(reason.getReason());
             entity.setStatus(true);
-            entity.setHuongLuong(reason.getHuongLuong());
+            entity.setHuongLuong(reason.getSalary());
             entity.setNguoiTao(userEntity.getHoTen());
             lyDoRepository.save(entity);
             return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Thêm lý do thành công"));
@@ -100,10 +100,10 @@ public class LyDoServiceImpl implements LyDoService {
             if (entity == null) {
                 return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
             }
-            entity.setId_cha(reason.getId_cha());
-            entity.setLyDo(reason.getLyDo());
+            entity.setId_cha(reason.getId_father_reason());
+            entity.setLyDo(reason.getReason());
             entity.setStatus(reason.isStatus());
-            entity.setHuongLuong(reason.getHuongLuong());
+            entity.setHuongLuong(reason.getSalary());
             entity.setNguoiSua(userEntity.getHoTen());
             lyDoRepository.save(entity);
             return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Sửa lý do thành công"));

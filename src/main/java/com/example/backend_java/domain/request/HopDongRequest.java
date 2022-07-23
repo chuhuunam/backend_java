@@ -12,37 +12,37 @@ import java.util.Date;
 @Data
 public class HopDongRequest {
     private Long id_user;
-    private Integer id_loai_hop_dong;
-    private Integer id_chuc_vu;
+    private Integer id_type_contract;
+    private Integer id_position;
     @ApiModelProperty(notes = "tính chất lao động", example = "Chính thức, Thử việc, Học việc")
-    private String tinhChatLaoDong;
-    private Float luong;
-    private Date ngayKy;
-    private Date ngayHieuLuc;
-    private Date ngayKetThuc;
+    private String labor_nature;
+    private Float salary;
+    private Date sign_day;
+    private Date effective_date;
+    private Date end_date;
     private boolean status;
-    private String moTa;
+    private String describe;
 
     public ResponseEntity<?> validate() {
         if (id_user < 0 && id_user == null) {
             return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chưa nhập id_user "));
         }
-        if (Strings.isNullOrEmpty(tinhChatLaoDong)) {
+        if (Strings.isNullOrEmpty(labor_nature)) {
             return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chưa nhập tính chất lao động"));
         }
-        if (id_loai_hop_dong < 0 && id_loai_hop_dong == null) {
+        if (id_type_contract < 0 && id_type_contract == null) {
             return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chưa nhập id_loai_hop_dong "));
         }
-        if (luong < 0 && luong == null) {
+        if (salary < 0 && salary == null) {
             return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chưa nhập lương "));
         }
-        if (ngayHieuLuc == null) {
+        if (effective_date == null) {
             return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chưa nhập ngày hiệu lực "));
         }
-        if (ngayKetThuc == null) {
+        if (end_date == null) {
             return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chưa nhập ngày kết thúc "));
         }
-        if (ngayKy == null) {
+        if (sign_day == null) {
             return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chưa nhập ngày ký "));
         }
         return null;

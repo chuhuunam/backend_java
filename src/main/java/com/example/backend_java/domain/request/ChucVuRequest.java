@@ -8,22 +8,19 @@ import org.springframework.http.ResponseEntity;
 
 @Data
 public class ChucVuRequest {
-    private String maChucVu;
-
-    private String tenChucVu;
-
-    private String moTa;
-
+    private String id_position;
+    private String name_position;
+    private String describe;
     private boolean status;
 
     public ResponseEntity<?> validate() {
-        if (Strings.isNullOrEmpty(maChucVu)) {
+        if (Strings.isNullOrEmpty(id_position)) {
             return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chưa nhập mã chức vụ"));
         }
-        if (Strings.isNullOrEmpty(tenChucVu)) {
+        if (Strings.isNullOrEmpty(name_position)) {
             return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chưa nhập tên chức vụ"));
         }
-        if (Strings.isNullOrEmpty(moTa)) {
+        if (Strings.isNullOrEmpty(describe)) {
             return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chưa nhập mô tả"));
         }
         return null;

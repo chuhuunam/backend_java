@@ -55,9 +55,9 @@ public class PhongBanServiceImpl implements PhongBanService {
         try {
             UserEntity userEntity = jwtUtils.getUserEntity(httpServletRequest);
             PhongBanEntity entity = new PhongBanEntity();
-            entity.setMaPhongBan(request.getMaPhongBan());
-            entity.setTenPhongBan(request.getTenPhongBan());
-            entity.setMoTa(request.getMoTa());
+            entity.setMaPhongBan(request.getId_department());
+            entity.setTenPhongBan(request.getName_department());
+            entity.setMoTa(request.getDescribe());
             entity.setStatus(true);
             entity.setNguoiTao(userEntity.getHoTen());
             phongBanRepository.save(entity);
@@ -77,9 +77,9 @@ public class PhongBanServiceImpl implements PhongBanService {
             if (entity == null) {
                 return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
             }
-            entity.setMaPhongBan(department.getMaPhongBan());
-            entity.setTenPhongBan(department.getTenPhongBan());
-            entity.setMoTa(department.getMoTa());
+            entity.setMaPhongBan(department.getId_department());
+            entity.setTenPhongBan(department.getName_department());
+            entity.setMoTa(department.getDescribe());
             entity.setStatus(department.isStatus());
             entity.setNguoiSua(userEntity.getHoTen());
             phongBanRepository.save(entity);

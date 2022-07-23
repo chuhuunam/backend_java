@@ -10,15 +10,15 @@ import org.springframework.http.ResponseEntity;
 @Data
 public class LoginRequest {
     @ApiModelProperty(notes = "Tài khoản", example = "namch")
-    private String taiKhoan;
+    private String username;
     @ApiModelProperty(notes = "Mật Khẩu", example = "5f4dcc3b5aa765d61d8327deb882cf99")
-    private String matKhau;
+    private String password;
 
     public ResponseEntity<?> validate() {
-        if (Strings.isNullOrEmpty(taiKhoan)) {
+        if (Strings.isNullOrEmpty(username)) {
             return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chưa nhập username"));
         }
-        if (Strings.isNullOrEmpty(matKhau)) {
+        if (Strings.isNullOrEmpty(password)) {
             return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chưa nhập password"));
         }
         return null;

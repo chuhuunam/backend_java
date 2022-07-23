@@ -10,6 +10,7 @@ import com.example.backend_java.domain.request.PasswordRequest;
 import com.example.backend_java.domain.request.StatusRequest;
 import com.example.backend_java.domain.request.UserRequest;
 import com.example.backend_java.domain.request.updateDepRequest;
+import com.example.backend_java.domain.response.ErrResponse;
 import com.example.backend_java.domain.response.PageResponse;
 import com.example.backend_java.domain.response.ResponseResponse;
 import com.example.backend_java.repository.*;
@@ -63,35 +64,39 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<?> getPageUser(HttpServletRequest request, String keyword, Integer idPhongBan, Integer idChucVu, Integer index, Integer size) {
-        UserEntity userEntity = jwtUtils.getUserEntity(request);
-        Set<RoleEntity> en = userEntity.getRoles();
-        Integer offset = (index - 1) * size;
-        for (RoleEntity s : en) {
-            List<Object[]> page;
-            if (s.getMaQuyen().equals("Admin")) {
-                page = userRepository.getUser(keyword, idPhongBan, idChucVu, offset, size);
-                ArrayList<UserDto> list = new ArrayList<>();
-                for (Object[] entity : page) {
-                    LoaiHopDongEntity loaihd = loaiHopDongRepository.Name((BigInteger) entity[14]);
-                    list.add(new UserDto(entity[0], entity[1], entity[2], entity[3], entity[4], entity[5], entity[6],
-                            entity[7], entity[8], entity[9], (Boolean) entity[10], entity[11], entity[12], entity[13], loaihd.getTenHopDong(),
-                            loaihd.getBaoHiem(), entity[15], entity[16]));
+        try {
+            UserEntity userEntity = jwtUtils.getUserEntity(request);
+            Set<RoleEntity> en = userEntity.getRoles();
+            Integer offset = (index - 1) * size;
+            for (RoleEntity s : en) {
+                List<Object[]> page;
+                if (s.getMaQuyen().equals("Admin")) {
+                    page = userRepository.getUser(keyword, idPhongBan, idChucVu, offset, size);
+                    ArrayList<UserDto> list = new ArrayList<>();
+                    for (Object[] entity : page) {
+                        LoaiHopDongEntity loaihd = loaiHopDongRepository.Name((BigInteger) entity[14]);
+                        list.add(new UserDto(entity[0], entity[1], entity[2], entity[3], entity[4], entity[5], entity[6],
+                                entity[7], entity[8], entity[9], (Boolean) entity[10], entity[11], entity[12], entity[13], loaihd.getTenHopDong(),
+                                loaihd.getBaoHiem(), entity[15], entity[16]));
+                    }
+                    PageResponse<HopDongEntity> data = new PageResponse(index, size, (long) page.size(), list);
+                    return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, data));
+                } else {
+                    Integer depart = Math.toIntExact(userEntity.getDepartments().getId());
+                    page = userRepository.getUser(keyword, depart, idChucVu, offset, size);
+                    ArrayList<UserDto> list = new ArrayList<>();
+                    for (Object[] entity : page) {
+                        LoaiHopDongEntity loaihd = loaiHopDongRepository.Name((BigInteger) entity[14]);
+                        list.add(new UserDto(entity[0], entity[1], entity[2], entity[3], entity[4], entity[5], entity[6],
+                                entity[7], entity[8], entity[9], (Boolean) entity[10], entity[11], entity[12], entity[13], loaihd.getTenHopDong(),
+                                loaihd.getBaoHiem(), entity[15], entity[16]));
+                    }
+                    PageResponse<HopDongEntity> data = new PageResponse(index, size, (long) page.size(), list);
+                    return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, data));
                 }
-                PageResponse<HopDongEntity> data = new PageResponse(index, size, (long) page.size(), list);
-                return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, data));
-            } else {
-                Integer depart = Math.toIntExact(userEntity.getDepartments().getId());
-                page = userRepository.getUser(keyword, depart, idChucVu, offset, size);
-                ArrayList<UserDto> list = new ArrayList<>();
-                for (Object[] entity : page) {
-                    LoaiHopDongEntity loaihd = loaiHopDongRepository.Name((BigInteger) entity[14]);
-                    list.add(new UserDto(entity[0], entity[1], entity[2], entity[3], entity[4], entity[5], entity[6],
-                            entity[7], entity[8], entity[9], (Boolean) entity[10], entity[11], entity[12], entity[13], loaihd.getTenHopDong(),
-                            loaihd.getBaoHiem(), entity[15], entity[16]));
-                }
-                PageResponse<HopDongEntity> data = new PageResponse(index, size, (long) page.size(), list);
-                return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, data));
             }
+        } catch (Throwable ex) {
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Phân trang nhân viên lỗi"));
         }
         return null;
     }
@@ -100,10 +105,10 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<?> createUser(HttpServletRequest request, UserRequest user) {
         try {
             if (userRepository.existsAllByEmail(user.getEmail())) {
-                return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Error: Email is already in use!"));
+                return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Email đã tồn tại!"));
             }
             DataMailDto dataMail = new DataMailDto();
-            String[] tmp = user.getHoTen().split(" ");
+            String[] tmp = user.getName_user().split(" ");
             String username = "";
             for (int i = tmp.length - 1; i >= 0; i--) {
                 if (i == tmp.length - 1) {
@@ -119,23 +124,24 @@ public class UserServiceImpl implements UserService {
             UserEntity userEntity = jwtUtils.getUserEntity(request);
             UserEntity entity = new UserEntity();
             entity.setEmail(user.getEmail());
-            entity.setHoTen(user.getHoTen());
+            entity.setHoTen(user.getName_user());
             if (count > 0) {
                 entity.setTaiKhoan(username + count);
             } else {
                 entity.setTaiKhoan(username);
             }
-            entity.setSoDienThoai(user.getSoDienThoai());
-            entity.setAnhDaiDien(user.getAnhDaiDien());
+            entity.setSoDienThoai(user.getPhone());
+            entity.setAnhDaiDien(user.getAvatar());
             entity.setCmt(user.getCmt());
             entity.setMatKhau(_passwordEncoder.encode(pass));
-            entity.setDiaChi(user.getDiaChi());
-            entity.setGioiTinh(user.getGioiTinh());
-            entity.setNgaySinh(user.getNgaySinh());
+            entity.setDiaChi(user.getAddress());
+            entity.setGioiTinh(user.getSex());
+            entity.setNgaySinh(user.getBirthday());
+            entity.setCmt(user.getCmt());
             entity.setStatus(true);
-            PhongBanEntity department = phongBanRepository.findById(Long.valueOf(user.getId_phong_ban())).get();
+            PhongBanEntity department = phongBanRepository.findById(Long.valueOf(user.getId_department())).get();
             entity.setDepartments(department);
-            ChucVuEntity position = chucVuRepository.findById(Long.valueOf(user.getId_chuc_vu())).get();
+            ChucVuEntity position = chucVuRepository.findById(Long.valueOf(user.getId_position())).get();
             entity.setPositions(position);
             Set<String> strRoles = user.getRoles();
             Set<RoleEntity> roles = new HashSet<>();
@@ -160,15 +166,15 @@ public class UserServiceImpl implements UserService {
             dataMail.setSubject("Thông tin tài khoản cá nhân");
 
             Map<String, Object> props = new HashMap<>();
-            props.put("name", user.getHoTen());
+            props.put("name", user.getName_user());
             props.put("username", username);
             props.put("password", pass);
             dataMail.setProps(props);
 
             mailService.sendHtmlMail(dataMail, "client");
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Thêm thành công"));
+            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Thêm nhân viên thành công"));
         } catch (Throwable ex) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "System busy"));
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Thêm nhân viên thất bại"));
         }
     }
 
@@ -178,19 +184,20 @@ public class UserServiceImpl implements UserService {
             UserEntity userEntity = jwtUtils.getUserEntity(request);
             UserEntity entity = userRepository.findById(id).orElse(null);
             if (entity == null) {
-                return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
+                return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
             }
             entity.setEmail(user.getEmail());
-            entity.setSoDienThoai(user.getSoDienThoai());
-            entity.setAnhDaiDien(user.getAnhDaiDien());
+            entity.setSoDienThoai(user.getPhone());
+            entity.setAnhDaiDien(user.getAvatar());
             entity.setCmt(user.getCmt());
-            entity.setDiaChi(user.getDiaChi());
-            entity.setGioiTinh(user.getGioiTinh());
-            entity.setNgaySinh(user.getNgaySinh());
-            entity.setStatus(user.isStatus());
-            PhongBanEntity department = phongBanRepository.findById(Long.valueOf(user.getId_phong_ban())).get();
+            entity.setDiaChi(user.getAddress());
+            entity.setGioiTinh(user.getSex());
+            entity.setNgaySinh(user.getBirthday());
+            entity.setCmt(user.getCmt());
+            entity.setStatus(true);
+            PhongBanEntity department = phongBanRepository.findById(Long.valueOf(user.getId_department())).get();
             entity.setDepartments(department);
-            ChucVuEntity position = chucVuRepository.findById(Long.valueOf(user.getId_chuc_vu())).get();
+            ChucVuEntity position = chucVuRepository.findById(Long.valueOf(user.getId_position())).get();
             entity.setPositions(position);
             Set<String> strRoles = user.getRoles();
             Set<RoleEntity> roles = new HashSet<>();
@@ -210,9 +217,9 @@ public class UserServiceImpl implements UserService {
             entity.setRoles(roles);
             entity.setNguoiSua(userEntity.getHoTen());
             userRepository.save(entity);
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Sửa thành công"));
+            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Sửa nhân viên thành công"));
         } catch (Throwable ex) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "System busy"));
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Sửa nhân viên thất bại"));
         }
     }
 
@@ -221,12 +228,12 @@ public class UserServiceImpl implements UserService {
         try {
             UserEntity entity = userRepository.findById(id).orElse(null);
             if (entity == null) {
-                return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
+                return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
             }
             userRepository.delete(entity);
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Xóa thành công"));
+            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Xóa nhân viên thành công"));
         } catch (Throwable ex) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "System busy"));
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Xóa nhân viên thất bại"));
         }
     }
 
@@ -236,14 +243,14 @@ public class UserServiceImpl implements UserService {
             UserEntity userEntity = jwtUtils.getUserEntity(request);
             UserEntity entity = userRepository.findById(id).orElse(null);
             if (entity == null) {
-                return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
+                return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
             }
-            entity.setMatKhau(_passwordEncoder.encode(password.getMat_khau()));
+            entity.setMatKhau(_passwordEncoder.encode(password.getPassword()));
             entity.setNguoiSua(userEntity.getHoTen());
             userRepository.save(entity);
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Sửa thành công"));
+            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Sửa mật khẩu nhân viên thành công"));
         } catch (Exception e) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, e));
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Sửa mật khẩu nhân viên thất bại"));
         }
     }
 
@@ -253,14 +260,14 @@ public class UserServiceImpl implements UserService {
             UserEntity userEntity = jwtUtils.getUserEntity(request);
             UserEntity entity = userRepository.findById(id).orElse(null);
             if (entity == null) {
-                return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
+                return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
             }
             entity.setStatus(status.isStatus());
             entity.setNguoiSua(userEntity.getHoTen());
             userRepository.save(entity);
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Sửa thành công"));
+            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Sửa trạng thái nhân viên thành công"));
         } catch (Exception e) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, e));
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Sửa trạng thái nhân viên thất bại"));
         }
     }
 
@@ -270,15 +277,15 @@ public class UserServiceImpl implements UserService {
             UserEntity userEntity = jwtUtils.getUserEntity(request);
             UserEntity entity = userRepository.findById(id).orElse(null);
             if (entity == null) {
-                return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
+                return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
             }
-            PhongBanEntity dep = phongBanRepository.findById(Long.valueOf(department.getId_phong_ban())).get();
+            PhongBanEntity dep = phongBanRepository.findById(Long.valueOf(department.getId_department())).get();
             entity.setDepartments(dep);
             entity.setNguoiSua(userEntity.getHoTen());
             userRepository.save(entity);
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Sửa thành công"));
+            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Chuyển phòng ban nhân viên thành công"));
         } catch (Exception e) {
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, e));
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chuyển phòng ban nhân viên thất bại"));
         }
     }
 
@@ -340,13 +347,13 @@ public class UserServiceImpl implements UserService {
         List<Object[]> page = userRepository.getList(userEntity.getId());
         String quyen = null;
         UserEntity userEntity1 = userRepository.findById(userEntity.getId()).get();
-        for (RoleEntity a : userEntity1.getRoles()){
+        for (RoleEntity a : userEntity1.getRoles()) {
             quyen = a.getMaQuyen();
         }
         ArrayList<UserLoginDto> list = new ArrayList<>();
         for (Object[] entity : page) {
             list.add(new UserLoginDto(entity[0], entity[1], entity[2], entity[3], entity[4], entity[5], entity[6],
-                    entity[7], entity[8], entity[9], entity[10], entity[11],quyen));
+                    entity[7], entity[8], entity[9], entity[10], entity[11], quyen));
         }
         return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, list));
     }

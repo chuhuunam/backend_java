@@ -55,9 +55,9 @@ public class ChucVuServiceImpl implements ChucVuService {
         try {
             UserEntity userEntity = jwtUtils.getUserEntity(request);
             ChucVuEntity entity = new ChucVuEntity();
-            entity.setMaChucVu(position.getMaChucVu());
-            entity.setTenChucVu(position.getTenChucVu());
-            entity.setMoTa(position.getMoTa());
+            entity.setMaChucVu(position.getId_position());
+            entity.setTenChucVu(position.getName_position());
+            entity.setMoTa(position.getDescribe());
             entity.setStatus(true);
             entity.setNguoiTao(userEntity.getHoTen());
             chucVuRepository.save(entity);
@@ -75,9 +75,9 @@ public class ChucVuServiceImpl implements ChucVuService {
             if (entity == null) {
                 return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
             }
-            entity.setMaChucVu(position.getMaChucVu());
-            entity.setTenChucVu(position.getTenChucVu());
-            entity.setMoTa(position.getMoTa());
+            entity.setMaChucVu(position.getId_position());
+            entity.setTenChucVu(position.getName_position());
+            entity.setMoTa(position.getDescribe());
             entity.setStatus(position.isStatus());
             entity.setNguoiSua(userEntity.getHoTen());
             chucVuRepository.save(entity);

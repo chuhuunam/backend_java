@@ -9,16 +9,16 @@ import org.springframework.http.ResponseEntity;
 
 @Data
 public class LoaiHopDongRequest {
-    private String tenHopDong;
+    private String name_contract;
     @ApiModelProperty(notes = "Bảo hiểm", example = "0 là không,1 là có")
-    private Integer baoHiem;
+    private Integer insurance;
     private boolean status;
 
     public ResponseEntity<?> validate() {
-        if (Strings.isNullOrEmpty(tenHopDong)) {
+        if (Strings.isNullOrEmpty(name_contract)) {
             return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chưa nhập tên hợp đồng"));
         }
-        if (baoHiem < 0 && baoHiem == null) {
+        if (insurance < 0 && insurance == null) {
             return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chưa nhập BHXH "));
         }
         return null;

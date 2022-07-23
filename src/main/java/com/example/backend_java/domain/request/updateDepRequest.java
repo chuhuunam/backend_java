@@ -7,10 +7,10 @@ import org.springframework.http.ResponseEntity;
 
 @Data
 public class updateDepRequest {
-    private Integer id_phong_ban;
+    private Integer id_department;
 
     public ResponseEntity<?> validate() {
-        if (id_phong_ban == null || id_phong_ban < 0) {
+        if (id_department == null || id_department < 0) {
             return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chưa nhập id_phong_ban"));
         }
         return null;

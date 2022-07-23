@@ -8,10 +8,10 @@ import org.springframework.http.ResponseEntity;
 
 @Data
 public class PasswordRequest {
-    private String mat_khau;
+    private String password;
 
     public ResponseEntity<?> validate() {
-        if (Strings.isNullOrEmpty(mat_khau)) {
+        if (Strings.isNullOrEmpty(password)) {
             return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chưa nhập email"));
         }
         return null;

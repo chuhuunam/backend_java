@@ -50,9 +50,9 @@ public class RoleServiceImpl implements RoleService {
         try {
             UserEntity userEntity = jwtUtils.getUserEntity(request);
             RoleEntity entity = new RoleEntity();
-            entity.setMaQuyen(role.getMaQuyen());
-            entity.setTenQuyen(role.getTenQuyen());
-            entity.setMoTa(role.getMoTa());
+            entity.setMaQuyen(role.getId_role());
+            entity.setTenQuyen(role.getName_role());
+            entity.setMoTa(role.getDescribe());
             entity.setStatus(true);
             entity.setNguoiTao(userEntity.getHoTen());
             roleRepository.save(entity);
@@ -70,9 +70,9 @@ public class RoleServiceImpl implements RoleService {
             if (entity == null) {
                 return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
             }
-            entity.setMaQuyen(role.getMaQuyen());
-            entity.setTenQuyen(role.getTenQuyen());
-            entity.setMoTa(role.getMoTa());
+            entity.setMaQuyen(role.getId_role());
+            entity.setTenQuyen(role.getName_role());
+            entity.setMoTa(role.getDescribe());
             entity.setStatus(role.isStatus());
             entity.setNguoiSua(userEntity.getHoTen());
             roleRepository.save(entity);

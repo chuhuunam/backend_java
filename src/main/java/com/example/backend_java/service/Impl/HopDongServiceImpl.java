@@ -102,17 +102,17 @@ public class HopDongServiceImpl implements HopDongService {
                 } else {
                     stt = stt + 1;
                 }
-                LoaiHopDongEntity loaihopdong = loaiHopDongRepository.findById(Long.valueOf(hopdong.getId_loai_hop_dong())).get();
+                LoaiHopDongEntity loaihopdong = loaiHopDongRepository.findById(Long.valueOf(hopdong.getId_type_contract())).get();
                 entity.setLoaihopdong(loaihopdong);
                 UserEntity user = userRepository.findById(Long.valueOf(hopdong.getId_user())).get();
                 entity.setNguoidung(user);
                 entity.setMaHopDong("HD_" + stt);
-                entity.setNgayKy(hopdong.getNgayKy());
-                entity.setNgayHieuLuc(hopdong.getNgayHieuLuc());
-                entity.setNgayKetThuc(hopdong.getNgayKetThuc());
-                entity.setLuong(hopdong.getLuong());
+                entity.setNgayKy(hopdong.getSign_day());
+                entity.setNgayHieuLuc(hopdong.getEffective_date());
+                entity.setNgayKetThuc(hopdong.getEnd_date());
+                entity.setLuong(hopdong.getSalary());
                 entity.setStatus(true);
-                entity.setMoTa(hopdong.getMoTa());
+                entity.setMoTa(hopdong.getDescribe());
                 entity.setNguoiTao(userEntity.getHoTen());
                 hopDongRepository.save(entity);
                 return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Thêm hợp đồng thành công"));
@@ -132,15 +132,16 @@ public class HopDongServiceImpl implements HopDongService {
             if (entity == null) {
                 return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
             }
-            LoaiHopDongEntity loaihopdong = loaiHopDongRepository.findById(Long.valueOf(req.getId_loai_hop_dong())).get();
+            LoaiHopDongEntity loaihopdong = loaiHopDongRepository.findById(Long.valueOf(req.getId_type_contract())).get();
             entity.setLoaihopdong(loaihopdong);
             UserEntity user = userRepository.findById(Long.valueOf(req.getId_user())).get();
             entity.setNguoidung(user);
-            entity.setNgayHieuLuc(req.getNgayHieuLuc());
-            entity.setNgayKetThuc(req.getNgayKetThuc());
-            entity.setLuong(req.getLuong());
+            entity.setNgayKy(req.getSign_day());
+            entity.setNgayHieuLuc(req.getEffective_date());
+            entity.setNgayKetThuc(req.getEnd_date());
+            entity.setLuong(req.getSalary());
+            entity.setMoTa(req.getDescribe());
             entity.setStatus(req.isStatus());
-            entity.setMoTa(req.getMoTa());
             entity.setNguoiSua(userEntity.getHoTen());
             hopDongRepository.save(entity);
             return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Sửa hợp đồng thành công"));
