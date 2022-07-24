@@ -1,10 +1,12 @@
 package com.example.backend_java.repository;
 
 import com.example.backend_java.domain.entity.HopDongEntity;
+import io.swagger.models.auth.In;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigInteger;
 import java.util.List;
 
 @Repository
@@ -38,4 +40,9 @@ public interface HopDongRepository extends JpaRepository<HopDongEntity,Long> {
             "JOIN phong_ban ON phong_ban.id = user.id_phong_ban \n" +
             "ORDER BY `hop_dong`.`id` DESC")
     List<Object[]> exfort();
+
+    @Query(nativeQuery = true, value = "SELECT * FROM `hop_dong` \n" +
+            "WHERE hop_dong.id_user = :id\n" +
+            "AND hop_dong.status = 1")
+    HopDongEntity find(BigInteger id);
 }

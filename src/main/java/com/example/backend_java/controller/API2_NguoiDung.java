@@ -68,7 +68,7 @@ public class API2_NguoiDung extends _BaseController {
     @PostMapping("")
     @ApiOperation(value = "Thêm nhân viên")
     public ResponseEntity<?> create(HttpServletRequest request,
-                                    @RequestBody UserRequest user) throws MessagingException {
+                                    @ModelAttribute UserRequest user) throws MessagingException, IOException {
         if (request == null) {
             return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Vui lòng nhập đầy đủ thông tin"));
         } else {
@@ -80,8 +80,8 @@ public class API2_NguoiDung extends _BaseController {
     @PutMapping("{id}")
     @ApiOperation(value = "Sửa nhân viên")
     public ResponseEntity<?> update(HttpServletRequest request,
-                                    @RequestBody UserRequest user,
-                                    @PathVariable(value = "id") Long id) {
+                                    @ModelAttribute UserRequest user,
+                                    @PathVariable(value = "id") Long id) throws IOException {
         logger.info("=> update nhân viên");
         if (request == null) {
             return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Vui lòng nhập đầy đủ thông tin"));

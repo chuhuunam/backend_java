@@ -16,9 +16,9 @@ import java.io.IOException;
 public interface UserService {
     ResponseEntity<?> getPageUser(HttpServletRequest request, String keyword, Integer idPhongBan, Integer idChucVu, Integer index, Integer size);
 
-    ResponseEntity<?> createUser(HttpServletRequest request, UserRequest user) throws MessagingException;
+    ResponseEntity<?> createUser(HttpServletRequest request, UserRequest user) throws MessagingException, IOException;
 
-    ResponseEntity<?> updateUser(HttpServletRequest request, UserRequest user, Long id);
+    ResponseEntity<?> updateUser(HttpServletRequest request, UserRequest user, Long id) throws IOException;
 
     ResponseEntity<?> deleteUser(Long id);
 

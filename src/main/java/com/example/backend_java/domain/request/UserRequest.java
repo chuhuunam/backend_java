@@ -1,6 +1,7 @@
 package com.example.backend_java.domain.request;
 
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 import java.util.Set;
@@ -12,7 +13,7 @@ public class UserRequest {
     private Date birthday;
     private String phone;
     private String email;
-    private String avatar;
+    private MultipartFile avatar;
     private String address;
     private String cmt;
     private boolean status;

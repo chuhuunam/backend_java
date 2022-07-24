@@ -2,7 +2,6 @@ package com.example.backend_java.service.Impl;
 
 import com.example.backend_java.constant.Constant;
 import com.example.backend_java.domain.dto.DataMailDto;
-import com.example.backend_java.domain.dto.RoleDto;
 import com.example.backend_java.domain.dto.UserDto;
 import com.example.backend_java.domain.dto.UserLoginDto;
 import com.example.backend_java.domain.entity.*;
@@ -16,7 +15,6 @@ import com.example.backend_java.domain.response.ResponseResponse;
 import com.example.backend_java.repository.*;
 import com.example.backend_java.service.MailService;
 import com.example.backend_java.service.UserService;
-import com.example.backend_java.utils.DataUtils;
 import com.example.backend_java.utils.JwtUtils;
 import com.example.backend_java.utils.TimeUtil;
 import com.example.backend_java.utils.VNCharacterUtils;
@@ -29,12 +27,21 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import javax.mail.MessagingException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.security.MessageDigest;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -46,15 +53,17 @@ public class UserServiceImpl implements UserService {
     BCryptPasswordEncoder _passwordEncoder = new BCryptPasswordEncoder();
     private final JwtUtils jwtUtils;
     private final UserRepository userRepository;
+    private final HopDongRepository hopDongRepository;
     private final LoaiHopDongRepository loaiHopDongRepository;
     private final PhongBanRepository phongBanRepository;
     private final ChucVuRepository chucVuRepository;
     private final RoleRepository roleRepository;
     private final MailService mailService;
 
-    public UserServiceImpl(JwtUtils jwtUtils, UserRepository userRepository, LoaiHopDongRepository loaiHopDongRepository, PhongBanRepository phongBanRepository, ChucVuRepository chucVuRepository, RoleRepository roleRepository, MailService mailService) {
+    public UserServiceImpl(JwtUtils jwtUtils, UserRepository userRepository, HopDongRepository hopDongRepository, LoaiHopDongRepository loaiHopDongRepository, PhongBanRepository phongBanRepository, ChucVuRepository chucVuRepository, RoleRepository roleRepository, MailService mailService) {
         this.jwtUtils = jwtUtils;
         this.userRepository = userRepository;
+        this.hopDongRepository = hopDongRepository;
         this.loaiHopDongRepository = loaiHopDongRepository;
         this.phongBanRepository = phongBanRepository;
         this.chucVuRepository = chucVuRepository;
@@ -74,10 +83,19 @@ public class UserServiceImpl implements UserService {
                     page = userRepository.getUser(keyword, idPhongBan, idChucVu, offset, size);
                     ArrayList<UserDto> list = new ArrayList<>();
                     for (Object[] entity : page) {
-                        LoaiHopDongEntity loaihd = loaiHopDongRepository.Name((BigInteger) entity[14]);
-                        list.add(new UserDto(entity[0], entity[1], entity[2], entity[3], entity[4], entity[5], entity[6],
-                                entity[7], entity[8], entity[9], (Boolean) entity[10], entity[11], entity[12], entity[13], loaihd.getTenHopDong(),
-                                loaihd.getBaoHiem(), entity[15], entity[16]));
+                        List<Object[]> UserContract = loaiHopDongRepository.UserContract((BigInteger) entity[0]);
+                        HopDongEntity hopDongEntity = hopDongRepository.find((BigInteger) entity[0]);
+                        if (hopDongEntity == null) {
+                            list.add(new UserDto(entity[0], entity[1], entity[2], entity[3], entity[4], entity[5], entity[6],
+                                    entity[7], entity[8], entity[9], (Boolean) entity[10], entity[11], entity[12], "null", "null",
+                                    "null", entity[13], entity[14]));
+                        } else {
+                            for (Object[] userContract : UserContract) {
+                                list.add(new UserDto(entity[0], entity[1], entity[2], entity[3], entity[4], entity[5], entity[6],
+                                        entity[7], entity[8], entity[9], (Boolean) entity[10], entity[11], entity[12], userContract[0], userContract[1],
+                                        userContract[2], entity[13], entity[14]));
+                            }
+                        }
                     }
                     PageResponse<HopDongEntity> data = new PageResponse(index, size, (long) page.size(), list);
                     return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, data));
@@ -102,7 +120,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<?> createUser(HttpServletRequest request, UserRequest user) {
+    public ResponseEntity<?> createUser(HttpServletRequest request, UserRequest user) throws IOException, MessagingException {
         try {
             if (userRepository.existsAllByEmail(user.getEmail())) {
                 return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Email đã tồn tại!"));
@@ -120,7 +138,6 @@ public class UserServiceImpl implements UserService {
             }
             Integer count = userRepository.Count(username);
 
-            String pass = DataUtils.generateTempPwd(6);
             UserEntity userEntity = jwtUtils.getUserEntity(request);
             UserEntity entity = new UserEntity();
             entity.setEmail(user.getEmail());
@@ -131,9 +148,27 @@ public class UserServiceImpl implements UserService {
                 entity.setTaiKhoan(username);
             }
             entity.setSoDienThoai(user.getPhone());
-            entity.setAnhDaiDien(user.getAvatar());
+            String fileName = StringUtils.cleanPath(user.getAvatar().getOriginalFilename());
+            Path uploadPath = Paths.get("Files-Upload");
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+            String name = System.currentTimeMillis() + "-" + fileName;
+            try (InputStream inputStream = user.getAvatar().getInputStream()) {
+                Path filePath = uploadPath.resolve(name);
+                Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException ioe) {
+                throw new IOException("Could not save file: " + fileName, ioe);
+            }
+            entity.setAnhDaiDien("image/" + name);
             entity.setCmt(user.getCmt());
-            entity.setMatKhau(_passwordEncoder.encode(pass));
+            String password = "123456";
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(password.getBytes());
+            byte[] digest = md.digest();
+            String myHash = DatatypeConverter
+                    .printHexBinary(digest).toLowerCase();
+            entity.setMatKhau(_passwordEncoder.encode(myHash));
             entity.setDiaChi(user.getAddress());
             entity.setGioiTinh(user.getSex());
             entity.setNgaySinh(user.getBirthday());
@@ -168,7 +203,7 @@ public class UserServiceImpl implements UserService {
             Map<String, Object> props = new HashMap<>();
             props.put("name", user.getName_user());
             props.put("username", username);
-            props.put("password", pass);
+            props.put("password", "123456");
             dataMail.setProps(props);
 
             mailService.sendHtmlMail(dataMail, "client");
@@ -179,7 +214,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<?> updateUser(HttpServletRequest request, UserRequest user, Long id) {
+    public ResponseEntity<?> updateUser(HttpServletRequest request, UserRequest user, Long id) throws IOException {
         try {
             UserEntity userEntity = jwtUtils.getUserEntity(request);
             UserEntity entity = userRepository.findById(id).orElse(null);
@@ -188,7 +223,19 @@ public class UserServiceImpl implements UserService {
             }
             entity.setEmail(user.getEmail());
             entity.setSoDienThoai(user.getPhone());
-            entity.setAnhDaiDien(user.getAvatar());
+            String fileName = StringUtils.cleanPath(user.getAvatar().getOriginalFilename());
+            Path uploadPath = Paths.get("Files-Upload");
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+            String name = System.currentTimeMillis() + "-" + fileName;
+            try (InputStream inputStream = user.getAvatar().getInputStream()) {
+                Path filePath = uploadPath.resolve(name);
+                Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException ioe) {
+                throw new IOException("Could not save file: " + fileName, ioe);
+            }
+            entity.setAnhDaiDien("image/" + name);
             entity.setCmt(user.getCmt());
             entity.setDiaChi(user.getAddress());
             entity.setGioiTinh(user.getSex());
@@ -333,10 +380,19 @@ public class UserServiceImpl implements UserService {
         List<Object[]> page = userRepository.getUserId(id);
         ArrayList<UserDto> list = new ArrayList<>();
         for (Object[] entity : page) {
-            LoaiHopDongEntity loaihd = loaiHopDongRepository.Name((BigInteger) entity[14]);
-            list.add(new UserDto(entity[0], entity[1], entity[2], entity[3], entity[4], entity[5], entity[6],
-                    entity[7], entity[8], entity[9], (Boolean) entity[10], entity[11], entity[12], entity[13], loaihd.getTenHopDong(),
-                    loaihd.getBaoHiem(), entity[15], entity[16]));
+            List<Object[]> UserContract = loaiHopDongRepository.UserContract((BigInteger) entity[0]);
+            HopDongEntity hopDongEntity = hopDongRepository.find((BigInteger) entity[0]);
+            if (hopDongEntity == null) {
+                list.add(new UserDto(entity[0], entity[1], entity[2], entity[3], entity[4], entity[5], entity[6],
+                        entity[7], entity[8], entity[9], (Boolean) entity[10], entity[11], entity[12], "null", "null",
+                        "null", entity[13], entity[14]));
+            } else {
+                for (Object[] userContract : UserContract) {
+                    list.add(new UserDto(entity[0], entity[1], entity[2], entity[3], entity[4], entity[5], entity[6],
+                            entity[7], entity[8], entity[9], (Boolean) entity[10], entity[11], entity[12], userContract[0], userContract[1],
+                            userContract[2], entity[13], entity[14]));
+                }
+            }
         }
         return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, list));
     }
