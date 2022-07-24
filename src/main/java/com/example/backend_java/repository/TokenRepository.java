@@ -14,8 +14,7 @@ public interface TokenRepository extends JpaRepository<TokenEntity, Long> {
 
     @Modifying
     @Transactional
-    @Query(nativeQuery = true, value = "DELETE FROM `token` WHERE tai_khoan = :taiKhoan \n" +
-            "And DATEDIFF(token.ngay_het_han,CURDATE()) < 0")
+    @Query(nativeQuery = true, value = "DELETE FROM `token` WHERE tai_khoan = :taiKhoan")
     void deleteTaiKhoan(String taiKhoan);
 
 }

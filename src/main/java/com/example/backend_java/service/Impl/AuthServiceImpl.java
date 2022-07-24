@@ -75,7 +75,7 @@ public class AuthServiceImpl implements AuthService {
                 // tạo token
                 String jwt = Config.TOKEN_PREFIX + " " + jwtUtils.generateJwtToken(userDetails);
                 // thêm vào header
-                request.addHeader(Config.HEADER_STRING, jwt);
+//                request.addHeader(Config.HEADER_STRING, jwt);
 
                 TokenEntity tokenEntity = new TokenEntity();
                 tokenEntity.setTaiKhoan(login.getUsername());
