@@ -42,10 +42,12 @@ public class API2_NguoiDung extends _BaseController {
                                   @RequestParam(required = false, name = "id_phong_ban")
                                   @ApiParam(value = "Nhập id_phong_ban") Integer idPhongBan,
                                   @RequestParam(required = false, name = "idChucVu")
-                                  @ApiParam(value = "Nhập idChucVu") Integer idChucVu) {
+                                  @ApiParam(value = "Nhập idChucVu") Integer idChucVu,
+                                  @RequestParam(required = false, name = "idLoaiHopDong")
+                                      @ApiParam(value = "Nhập idLoaiHopDong") Integer idLoaiHopDong) {
         Integer index = validPageIndex(pageIndex);
         Integer size = validPageSize(pageSize);
-        return userService.getPageUser(request, keyword, idPhongBan, idChucVu, index, size);
+        return userService.getPageUser(request, keyword, idPhongBan, idChucVu,idLoaiHopDong, index, size);
     }
 
     @GetMapping("/{id}")
