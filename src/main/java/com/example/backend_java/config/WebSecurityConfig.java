@@ -77,6 +77,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 // No need authentication.
                 .antMatchers(HttpMethod.POST, "/api/login").permitAll() //
+                .antMatchers("/image/{image}").permitAll() //
                 .anyRequest().authenticated();
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
