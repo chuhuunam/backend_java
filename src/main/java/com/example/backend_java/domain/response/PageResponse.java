@@ -5,14 +5,14 @@ import java.util.List;
 public class PageResponse<T> {
     private Integer pageIndex;
     private Integer pageSize;
-    private Long allRow;
+    private Long totalPage ;
     private List<T> data;
 
-    public PageResponse(Integer pageIndex, Integer pageSize, Long allRow, List<T> data) {
+    public PageResponse(Integer pageIndex, Integer pageSize, Long totalPage , List<T> data) {
         super();
         this.pageIndex = pageIndex;
         this.pageSize = pageSize;
-        this.allRow = allRow;
+        this.totalPage  = totalPage ;
         this.data = data;
     }
 
@@ -32,12 +32,12 @@ public class PageResponse<T> {
         this.pageSize = pageSize;
     }
 
-    public Long getAllRow() {
-        return allRow;
+    public Long getTotalPage() {
+        return totalPage;
     }
 
-    public void setAllRow(Long allRow) {
-        this.allRow = allRow;
+    public void setTotalPage(Long totalPage) {
+        this.totalPage = totalPage;
     }
 
     public List<T> getData() {

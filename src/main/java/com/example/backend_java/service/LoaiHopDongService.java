@@ -16,5 +16,5 @@ public interface LoaiHopDongService {
 
     ResponseEntity<?> deleteTypeContract(Long id);
 
-    ResponseEntity<?> getPage(Integer index, Integer size, String tenHopDong, String loaiHopDong, Integer baoHiem);
+    ResponseEntity<?> getPage(Integer index, Integer size, String tenHopDong, Integer baoHiem);
 }

@@ -15,9 +15,9 @@ public interface LoaiHopDongRepository extends JpaRepository<LoaiHopDongEntity,L
 
     @Query(nativeQuery = true, value = "SELECT * FROM `loai_hop_dong` " +
             "WHERE (:tenHopDong is null or lower(loai_hop_dong.ten_hop_dong) like lower(concat(concat('%', :tenHopDong),'%'))) " +
-            "AND (:loaiHopDong is null or lower(loai_hop_dong.loai_hop_dong) like lower(concat(concat('%', :loaiHopDong),'%')))" +
+//            "AND (:loaiHopDong is null or lower(loai_hop_dong.loai_hop_dong) like lower(concat(concat('%', :loaiHopDong),'%')))" +
             "AND (:baoHiem is null or loai_hop_dong.bao_hiem = :baoHiem)")
-    Page<LoaiHopDongEntity> search(String tenHopDong,String loaiHopDong,Integer baoHiem, Pageable pageable);
+    Page<LoaiHopDongEntity> search(String tenHopDong,Integer baoHiem, Pageable pageable);
 
     @Query(nativeQuery = true, value = "SELECT * FROM loai_hop_dong WHERE id LIKE %:id%")
     LoaiHopDongEntity Name(BigInteger id);

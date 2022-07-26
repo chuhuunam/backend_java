@@ -101,11 +101,11 @@ public class LoaiHopDongServiceImpl implements LoaiHopDongService {
     }
 
     @Override
-    public ResponseEntity<?> getPage(Integer index, Integer size, String tenHopDong, String loaiHopDong, Integer baoHiem) {
+    public ResponseEntity<?> getPage(Integer index, Integer size, String tenHopDong, Integer baoHiem) {
         try {
             Page<LoaiHopDongEntity> page;
             Pageable pageable = PageRequest.of(index - 1, size, Sort.by("id").descending());
-            page = loaiHopDongRepository.search(tenHopDong, loaiHopDong, baoHiem, pageable);
+            page = loaiHopDongRepository.search(tenHopDong, baoHiem, pageable);
             ArrayList<LoaiHopDongDto> list = new ArrayList<>();
             for (LoaiHopDongEntity entity : page.getContent()) {
                 LoaiHopDongDto r = new LoaiHopDongDto();
