@@ -14,7 +14,7 @@ import java.io.IOException;
 
 @Service
 public interface UserService {
-    ResponseEntity<?> getPageUser(HttpServletRequest request, String keyword, Integer idPhongBan, Integer idChucVu,Integer idLoaiHopDong, Integer index, Integer size);
+    ResponseEntity<?> getPageUser(HttpServletRequest request, String keyword, Integer idPhongBan, Integer idChucVu, Integer idLoaiHopDong, String sex, Integer index, Integer size);
 
     ResponseEntity<?> createUser(HttpServletRequest request, UserRequest user) throws MessagingException, IOException;
 
@@ -33,4 +33,6 @@ public interface UserService {
     ResponseEntity<?> getUser(Long id);
 
     ResponseEntity<?> getList(HttpServletRequest request);
+
+//    void s(HttpServletRequest request) throws NoSuchAlgorithmException;
 }

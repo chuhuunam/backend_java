@@ -36,13 +36,13 @@ public class API7_LoaiHopDong extends _BaseController {
             @ApiParam(value = "Trang cần lấy (tính từ 1). Mặc định 1") Integer pageIndex,
             @RequestParam(required = false, name = "page_size")
             @ApiParam(value = "Số bản ghi cho 1 trang (nhỏ nhất 1; lớn nhất 50). Mặc định 10") Integer pageSize,
-            @RequestParam(required = false, name = "tenHopDong")
-            @ApiParam(value = "Nhập tên loại hợp đồng ") String tenHopDong,
-            @RequestParam(required = false, name = "baoHiem")
-            @ApiParam(value = "Nhập bảo hiểm ") Integer baoHiem) {
+            @RequestParam(required = false, name = "contract_name")
+            @ApiParam(value = "Nhập tên loại hợp đồng ") String contract_name,
+            @RequestParam(required = false, name = "insurance")
+            @ApiParam(value = "Nhập bảo hiểm ") Integer insurance) {
         Integer index = validPageIndex(pageIndex);
         Integer size = validPageSize(pageSize);
-        return loaiHopDongService.getPage(index, size, tenHopDong, baoHiem);
+        return loaiHopDongService.getPage(index, size, contract_name, insurance);
     }
 
     @PostMapping("")

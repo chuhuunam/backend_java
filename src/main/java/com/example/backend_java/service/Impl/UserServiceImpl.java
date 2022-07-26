@@ -72,60 +72,86 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<?> getPageUser(HttpServletRequest request, String keyword, Integer idPhongBan, Integer idChucVu,Integer idLoaiHopDong, Integer index, Integer size) {
+    public ResponseEntity<?> getPageUser(HttpServletRequest request, String keyword, Integer idPhongBan, Integer idChucVu, Integer idLoaiHopDong, String sex, Integer index, Integer size) {
         try {
-            UserEntity userEntity = jwtUtils.getUserEntity(request);
-            Set<RoleEntity> en = userEntity.getRoles();
             Integer offset = (index - 1) * size;
-            for (RoleEntity s : en) {
-                List<Object[]> page;
-                if (s.getMaQuyen().equals("Admin")) {
-                    page = userRepository.getUser(keyword, idPhongBan, idChucVu, offset, size);
-                    ArrayList<UserDto> list = new ArrayList<>();
-                    for (Object[] entity : page) {
-                        List<Object[]> UserContract = loaiHopDongRepository.UserContract((BigInteger) entity[0],idLoaiHopDong);
-                        HopDongEntity hopDongEntity = hopDongRepository.find((BigInteger) entity[0]);
-                        if (hopDongEntity == null) {
+            List<Object[]> page;
+            if (idLoaiHopDong == null){
+                page = userRepository.getUser(keyword, idPhongBan, idChucVu,sex, offset, size);
+                Long total = userRepository.TotalUser(keyword, idPhongBan, idChucVu,sex);
+                ArrayList<UserDto> list = new ArrayList<>();
+                for (Object[] entity : page) {
+                    List<Object[]> UserContract = loaiHopDongRepository.UserContract((BigInteger) entity[0],idLoaiHopDong);
+                    HopDongEntity hopDongEntity = hopDongRepository.find((BigInteger) entity[0]);
+                    if (hopDongEntity == null) {
+                        list.add(new UserDto(entity[0], entity[1], entity[2], entity[3], entity[4], entity[5], entity[6],
+                                entity[7], entity[8], entity[9], (Boolean) entity[10], entity[11], entity[12], "null", "null",
+                                "null", entity[13], entity[14]));
+                    } else {
+                        for (Object[] userContract : UserContract) {
                             list.add(new UserDto(entity[0], entity[1], entity[2], entity[3], entity[4], entity[5], entity[6],
-                                    entity[7], entity[8], entity[9], (Boolean) entity[10], entity[11], entity[12], "null", "null",
-                                    "null", entity[13], entity[14]));
-                        } else {
-                            for (Object[] userContract : UserContract) {
-                                list.add(new UserDto(entity[0], entity[1], entity[2], entity[3], entity[4], entity[5], entity[6],
-                                        entity[7], entity[8], entity[9], (Boolean) entity[10], entity[11], entity[12], userContract[0], userContract[1],
-                                        userContract[2], entity[13], entity[14]));
-                            }
+                                    entity[7], entity[8], entity[9], (Boolean) entity[10], entity[11], entity[12], userContract[0], userContract[1],
+                                    userContract[2], entity[13], entity[14]));
                         }
                     }
-                    PageResponse<HopDongEntity> data = new PageResponse(index, size, (long) page.size(), list);
-                    return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, data));
-                } else {
-                    Integer depart = Math.toIntExact(userEntity.getDepartments().getId());
-                    page = userRepository.getUser(keyword, depart, idChucVu, offset, size);
-                    ArrayList<UserDto> list = new ArrayList<>();
-                    for (Object[] entity : page) {
-                        List<Object[]> UserContract = loaiHopDongRepository.UserContract((BigInteger) entity[0],idLoaiHopDong);
-                        HopDongEntity hopDongEntity = hopDongRepository.find((BigInteger) entity[0]);
-                        if (hopDongEntity == null) {
-                            list.add(new UserDto(entity[0], entity[1], entity[2], entity[3], entity[4], entity[5], entity[6],
-                                    entity[7], entity[8], entity[9], (Boolean) entity[10], entity[11], entity[12], "null", "null",
-                                    "null", entity[13], entity[14]));
-                        } else {
-                            for (Object[] userContract : UserContract) {
-                                list.add(new UserDto(entity[0], entity[1], entity[2], entity[3], entity[4], entity[5], entity[6],
-                                        entity[7], entity[8], entity[9], (Boolean) entity[10], entity[11], entity[12], userContract[0], userContract[1],
-                                        userContract[2], entity[13], entity[14]));
-                            }
-                        }
-                    }
-                    PageResponse<HopDongEntity> data = new PageResponse(index, size, (long) page.size(), list);
-                    return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, data));
                 }
+                PageResponse<HopDongEntity> data = new PageResponse(index, size, total, list);
+                return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, data));
+            }else {
+                page = userRepository.getUser1(keyword, idPhongBan, idChucVu,idLoaiHopDong,sex, offset, size);
+                Long total = userRepository.TotalUser1(keyword, idPhongBan, idChucVu,idLoaiHopDong,sex);
+                ArrayList<UserDto> list = new ArrayList<>();
+                for (Object[] entity : page) {
+                    List<Object[]> UserContract = loaiHopDongRepository.UserContract((BigInteger) entity[0],idLoaiHopDong);
+                    HopDongEntity hopDongEntity = hopDongRepository.find((BigInteger) entity[0]);
+                    if (hopDongEntity == null) {
+                        list.add(new UserDto(entity[0], entity[1], entity[2], entity[3], entity[4], entity[5], entity[6],
+                                entity[7], entity[8], entity[9], (Boolean) entity[10], entity[11], entity[12], "null", "null",
+                                "null", entity[13], entity[14]));
+                    } else {
+                        for (Object[] userContract : UserContract) {
+                            list.add(new UserDto(entity[0], entity[1], entity[2], entity[3], entity[4], entity[5], entity[6],
+                                    entity[7], entity[8], entity[9], (Boolean) entity[10], entity[11], entity[12], userContract[0], userContract[1],
+                                    userContract[2], entity[13], entity[14]));
+                        }
+                    }
+                }
+                PageResponse<HopDongEntity> data = new PageResponse(index, size,total, list);
+                return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, data));
             }
+
+//            Set<RoleEntity> en = userEntity.getRoles();
+//            for (RoleEntity s : en) {
+//
+//                if (s.getMaQuyen().equals("Admin")) {
+//
+//
+//                } else {
+//                    Integer depart = Math.toIntExact(userEntity.getDepartments().getId());
+//                    page = userRepository.getUser(keyword, depart, idChucVu,sex, offset, size);
+//                    ArrayList<UserDto> list = new ArrayList<>();
+//                    for (Object[] entity : page) {
+//                        List<Object[]> UserContract = loaiHopDongRepository.UserContract((BigInteger) entity[0],idLoaiHopDong);
+//                        HopDongEntity hopDongEntity = hopDongRepository.find((BigInteger) entity[0]);
+//                        if (hopDongEntity == null) {
+//                            list.add(new UserDto(entity[0], entity[1], entity[2], entity[3], entity[4], entity[5], entity[6],
+//                                    entity[7], entity[8], entity[9], (Boolean) entity[10], entity[11], entity[12], "null", "null",
+//                                    "null", entity[13], entity[14]));
+//                        } else {
+//                            for (Object[] userContract : UserContract) {
+//                                list.add(new UserDto(entity[0], entity[1], entity[2], entity[3], entity[4], entity[5], entity[6],
+//                                        entity[7], entity[8], entity[9], (Boolean) entity[10], entity[11], entity[12], userContract[0], userContract[1],
+//                                        userContract[2], entity[13], entity[14]));
+//                            }
+//                        }
+//                    }
+//                    PageResponse<HopDongEntity> data = new PageResponse(index, size, (long) page.size(), list);
+//                    return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, data));
+//                }
+//            }
         } catch (Throwable ex) {
             return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Phân trang nhân viên lỗi"));
         }
-        return null;
     }
 
     @Override
@@ -422,6 +448,47 @@ public class UserServiceImpl implements UserService {
         }
         return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, list));
     }
+
+//    @Override
+//    public void s(HttpServletRequest request) throws NoSuchAlgorithmException {
+//        for (int i =0;i<10;i++){
+//            UserEntity userEntity = jwtUtils.getUserEntity(request);
+//            UserEntity entity = new UserEntity();
+//            int desiredLength = 5;
+//            String random = UUID.randomUUID()
+//                    .toString()
+//                    .substring(0, desiredLength);
+//            entity.setHoTen(random);
+//            entity.setTaiKhoan(random+i);
+//            int code = (int) Math.floor(((Math.random() * 899999999) + 1000000000));
+//            entity.setSoDienThoai(String.valueOf(code));
+//            entity.setAnhDaiDien("image/namch.jpg");
+//            int codecmt = (int) Math.floor(((Math.random() * 899999999) + 1000000000));
+//            entity.setCmt(String.valueOf(codecmt));
+//            String password = "123456";
+//            MessageDigest md = MessageDigest.getInstance("MD5");
+//            md.update(password.getBytes());
+//            byte[] digest = md.digest();
+//            String myHash = DatatypeConverter
+//                    .printHexBinary(digest).toLowerCase();
+//            entity.setMatKhau(_passwordEncoder.encode(myHash));
+//            entity.setDiaChi("Hà Nội");
+//            entity.setNgaySinh(new Date());
+//            entity.setGioiTinh("Nữ");
+//            entity.setStatus(true);
+//            PhongBanEntity department = phongBanRepository.findById(4L).get();
+//            entity.setDepartments(department);
+//            ChucVuEntity position = chucVuRepository.findById(3L).get();
+//            entity.setPositions(position);
+//            RoleEntity RoleUser = roleRepository.findByMaQuyen("User");
+//            Set<RoleEntity> roles = new HashSet<>();
+//            roles.add(RoleUser);
+//            entity.setRoles(roles);
+//            entity.setNguoiTao(userEntity.getHoTen());
+//            entity.setEmail(random+i+"@gmail.com");
+//            userRepository.save(entity);
+//        }
+//    }
 
     private void writeHeaderLine(XSSFWorkbook workbook, XSSFSheet sheet) {
         Row row = sheet.createRow(0);

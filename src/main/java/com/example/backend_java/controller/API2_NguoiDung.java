@@ -18,6 +18,7 @@ import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 @RestController
 @RequestMapping("/api/user")
@@ -30,6 +31,11 @@ public class API2_NguoiDung extends _BaseController {
         this.userService = userService;
     }
 
+//    @GetMapping("/fake")
+//    public void a(HttpServletRequest request) throws NoSuchAlgorithmException {
+//        userService.s(request);
+//    }
+
     @GetMapping("/page")
     @ApiOperation(value = "Danh sách nhân viên phân trang")
     public ResponseEntity<?> list(HttpServletRequest request,
@@ -39,21 +45,23 @@ public class API2_NguoiDung extends _BaseController {
                                   @ApiParam(value = "Số bản ghi cho 1 trang (nhỏ nhất 1; lớn nhất 50). Mặc định 10") Integer pageSize,
                                   @RequestParam(required = false, name = "keyword")
                                   @ApiParam(value = "Nhập mã nhân viên, tên, cmt,...") String keyword,
-                                  @RequestParam(required = false, name = "id_phong_ban")
-                                  @ApiParam(value = "Nhập id_phong_ban") Integer idPhongBan,
-                                  @RequestParam(required = false, name = "idChucVu")
-                                  @ApiParam(value = "Nhập idChucVu") Integer idChucVu,
-                                  @RequestParam(required = false, name = "idLoaiHopDong")
-                                      @ApiParam(value = "Nhập idLoaiHopDong") Integer idLoaiHopDong) {
+                                  @RequestParam(required = false, name = "id_department")
+                                  @ApiParam(value = "Nhập id_phong_ban") Integer id_department,
+                                  @RequestParam(required = false, name = "id_position")
+                                  @ApiParam(value = "Nhập idChucVu") Integer id_position,
+                                  @RequestParam(required = false, name = "id_type_contract")
+                                  @ApiParam(value = "Nhập idLoaiHopDong") Integer id_type_contract,
+                                  @RequestParam(required = false, name = "sex")
+                                  @ApiParam(value = "Nhập giới tính") String sex) {
         Integer index = validPageIndex(pageIndex);
         Integer size = validPageSize(pageSize);
-        return userService.getPageUser(request, keyword, idPhongBan, idChucVu,idLoaiHopDong, index, size);
+        System.out.println(id_type_contract);
+        return userService.getPageUser(request, keyword, id_department, id_position,id_type_contract,sex, index, size);
     }
 
     @GetMapping("/{id}")
     @ApiOperation(value = "Chi tiết nhân viên")
-    public ResponseEntity<?> listUserId(@RequestParam(required = false, name = "id")
-                                        @ApiParam(value = "Id") Long id) {
+    public ResponseEntity<?> listUserId(@PathVariable(value = "id") Long id) {
         if (id == null) {
             return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Vui lòng nhập đầy đủ thông tin"));
         }

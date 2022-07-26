@@ -32,15 +32,15 @@ public class API8_HopDong extends _BaseController {
             @ApiParam(value = "Trang cần lấy (tính từ 1). Mặc định 1") Integer pageIndex,
             @RequestParam(required = false, name = "page_size")
             @ApiParam(value = "Số bản ghi cho 1 trang (nhỏ nhất 1; lớn nhất 50). Mặc định 10") Integer pageSize,
-            @RequestParam(required = false, name = "tenNhanVien")
-            @ApiParam(value = "tên nhân viên") String tenNhanVien,
-            @RequestParam(required = false, name = "maLoaiHopDong")
-            @ApiParam(value = "mã loại hợp đồng") Integer maLoaiHopDong,
+            @RequestParam(required = false, name = "name_user")
+            @ApiParam(value = "tên nhân viên") String name_user,
+            @RequestParam(required = false, name = "id_type_contract")
+            @ApiParam(value = "mã loại hợp đồng") Integer id_type_contract,
             @RequestParam(required = false, name = "status")
             @ApiParam(value = "0 là bảo hiểm hết hạn,1 ngược lại") Integer status) {
         Integer index = validPageIndex(pageIndex);
         Integer size = validPageSize(pageSize);
-        return hopDongService.getPage(tenNhanVien, maLoaiHopDong, status, index, size);
+        return hopDongService.getPage(name_user, id_type_contract, status, index, size);
     }
 
     @PostMapping("")

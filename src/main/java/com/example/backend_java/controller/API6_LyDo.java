@@ -38,11 +38,11 @@ public class API6_LyDo extends _BaseController {
     public ResponseEntity<?> list(
             @RequestParam(required = false, name = "page_index") @ApiParam(value = "Trang cần lấy (tính từ 1). Mặc định 1") Integer pageIndex,
             @RequestParam(required = false, name = "page_size") @ApiParam(value = "Số bản ghi cho 1 trang (nhỏ nhất 1; lớn nhất 50). Mặc định 10") Integer pageSize,
-            @RequestParam(required = false, name = "lyDo") @ApiParam(value = "Nhập tên lý do") String lyDo,
-            @RequestParam(required = false, name = "idCha") @ApiParam(value = "Nhập id cha của lý do") Integer idCha) {
+            @RequestParam(required = false, name = "reason") @ApiParam(value = "Nhập tên lý do") String reason,
+            @RequestParam(required = false, name = "father_reason") @ApiParam(value = "Nhập id cha của lý do") Integer father_reason) {
         Integer index = validPageIndex(pageIndex);
         Integer size = validPageSize(pageSize);
-        return lyDoService.getPage(index, size, lyDo, idCha);
+        return lyDoService.getPage(index, size, reason, father_reason);
     }
 
     @PostMapping("")
