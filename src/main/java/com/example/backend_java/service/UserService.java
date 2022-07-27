@@ -34,5 +34,7 @@ public interface UserService {
 
     ResponseEntity<?> getList(HttpServletRequest request);
 
+    ResponseEntity<?> statistical();
+
 //    void s(HttpServletRequest request) throws NoSuchAlgorithmException;
 }

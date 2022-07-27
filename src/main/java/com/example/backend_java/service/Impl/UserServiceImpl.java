@@ -1,9 +1,7 @@
 package com.example.backend_java.service.Impl;
 
 import com.example.backend_java.constant.Constant;
-import com.example.backend_java.domain.dto.DataMailDto;
-import com.example.backend_java.domain.dto.UserDto;
-import com.example.backend_java.domain.dto.UserLoginDto;
+import com.example.backend_java.domain.dto.*;
 import com.example.backend_java.domain.entity.*;
 import com.example.backend_java.domain.request.PasswordRequest;
 import com.example.backend_java.domain.request.StatusRequest;
@@ -447,6 +445,26 @@ public class UserServiceImpl implements UserService {
                     entity[7], entity[8], entity[9], entity[10], entity[11], quyen));
         }
         return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, list));
+    }
+
+    @Override
+    public ResponseEntity<?> statistical() {
+        UserStatisticDto userStatisticDto = new UserStatisticDto();
+        Integer total = userRepository.countByStatus(true);
+        userStatisticDto.setTotal(total);
+        List<Object[]> pieChartDto = userRepository.pie();
+        ArrayList<PieChartDto> list = new ArrayList<>();
+        for (Object[] entity : pieChartDto) {
+            list.add(new PieChartDto((BigInteger) entity[0],entity[1]));
+        }
+        List<Object[]> objects = userRepository.contractChart();
+        ArrayList<ContractChartDto> listContract = new ArrayList<>();
+        for (Object[] entity : objects) {
+            listContract.add(new ContractChartDto((BigInteger) entity[0],entity[1]));
+        }
+        userStatisticDto.setPieChart(list);
+        userStatisticDto.setContractChart(listContract);
+        return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, userStatisticDto));
     }
 
 //    @Override

@@ -36,6 +36,11 @@ public class API2_NguoiDung extends _BaseController {
 //        userService.s(request);
 //    }
 
+    @GetMapping("/statistical")
+    @ApiOperation(value = "Thống kê nhân viên")
+    public ResponseEntity<?> statistical(){
+        return userService.statistical();
+    }
     @GetMapping("/page")
     @ApiOperation(value = "Danh sách nhân viên phân trang")
     public ResponseEntity<?> list(HttpServletRequest request,
@@ -55,7 +60,6 @@ public class API2_NguoiDung extends _BaseController {
                                   @ApiParam(value = "Nhập giới tính") String sex) {
         Integer index = validPageIndex(pageIndex);
         Integer size = validPageSize(pageSize);
-        System.out.println(id_type_contract);
         return userService.getPageUser(request, keyword, id_department, id_position,id_type_contract,sex, index, size);
     }
 
