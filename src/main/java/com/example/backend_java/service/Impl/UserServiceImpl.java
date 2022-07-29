@@ -16,9 +16,7 @@ import com.example.backend_java.service.UserService;
 import com.example.backend_java.utils.JwtUtils;
 import com.example.backend_java.utils.TimeUtil;
 import com.example.backend_java.utils.VNCharacterUtils;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -117,36 +115,7 @@ public class UserServiceImpl implements UserService {
                 PageResponse<HopDongEntity> data = new PageResponse(index, size,total, list);
                 return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, data));
             }
-
-//            Set<RoleEntity> en = userEntity.getRoles();
-//            for (RoleEntity s : en) {
-//
-//                if (s.getMaQuyen().equals("Admin")) {
-//
-//
-//                } else {
-//                    Integer depart = Math.toIntExact(userEntity.getDepartments().getId());
-//                    page = userRepository.getUser(keyword, depart, idChucVu,sex, offset, size);
-//                    ArrayList<UserDto> list = new ArrayList<>();
-//                    for (Object[] entity : page) {
-//                        List<Object[]> UserContract = loaiHopDongRepository.UserContract((BigInteger) entity[0],idLoaiHopDong);
-//                        HopDongEntity hopDongEntity = hopDongRepository.find((BigInteger) entity[0]);
-//                        if (hopDongEntity == null) {
-//                            list.add(new UserDto(entity[0], entity[1], entity[2], entity[3], entity[4], entity[5], entity[6],
-//                                    entity[7], entity[8], entity[9], (Boolean) entity[10], entity[11], entity[12], "null", "null",
-//                                    "null", entity[13], entity[14]));
-//                        } else {
-//                            for (Object[] userContract : UserContract) {
-//                                list.add(new UserDto(entity[0], entity[1], entity[2], entity[3], entity[4], entity[5], entity[6],
-//                                        entity[7], entity[8], entity[9], (Boolean) entity[10], entity[11], entity[12], userContract[0], userContract[1],
-//                                        userContract[2], entity[13], entity[14]));
-//                            }
-//                        }
-//                    }
-//                    PageResponse<HopDongEntity> data = new PageResponse(index, size, (long) page.size(), list);
-//                    return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, data));
-//                }
-//            }
+//      Set<RoleEntity> en = userEntity.getRoles();for (RoleEntity s : en) {if (s.getMaQuyen().equals("Admin")) {} else {
         } catch (Throwable ex) {
             return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Phân trang nhân viên lỗi"));
         }
@@ -513,8 +482,11 @@ public class UserServiceImpl implements UserService {
         CellStyle style = workbook.createCellStyle();
         XSSFFont font = workbook.createFont();
         font.setBold(true);
-        font.setFontHeight(13);
+        font.setFontHeight(14);
         style.setFont(font);
+        style.setAlignment(HorizontalAlignment.CENTER);
+        style.setVerticalAlignment(VerticalAlignment.CENTER);
+        style.setWrapText(true);
         createCell(sheet, row, 0, "STT", style);
         createCell(sheet, row, 1, "Mã nhân viên", style);
         createCell(sheet, row, 2, "Tên nhân viên", style);
@@ -529,35 +501,48 @@ public class UserServiceImpl implements UserService {
         createCell(sheet, row, 11, "Tính chất nhân viên", style);
         createCell(sheet, row, 12, "Loại hợp đồng", style);
         createCell(sheet, row, 13, "Bảo hiểm", style);
-        createCell(sheet, row, 14, "Trạng thái nhân viên", style);
-
+        createCell(sheet, row, 14, "Ngày bắt đầu ", style);
     }
 
     private void writeDataLines(XSSFWorkbook workbook, XSSFSheet sheet) {
         int rowCount = 1;
         CellStyle style = workbook.createCellStyle();
         List<Object[]> list = userRepository.exfort();
+        CellStyle style1 = workbook.createCellStyle();
+        style1.setAlignment(HorizontalAlignment.CENTER);
+        style1.setVerticalAlignment(VerticalAlignment.CENTER);
+        style1.setWrapText(true);
         for (Object[] entity : list) {
+            List<Object[]> UserContract = loaiHopDongRepository.Contract((BigInteger) entity[0]);
+            HopDongEntity hopDongEntity = hopDongRepository.find((BigInteger) entity[0]);
             Row row = sheet.createRow(rowCount++);
             int columnCount = 0;
-            createCell(sheet, row, columnCount++, String.valueOf(rowCount - 1), style);
-            createCell(sheet, row, columnCount++, entity[0], style);
+            createCell(sheet, row, columnCount++, String.valueOf(rowCount - 1), style1);
             createCell(sheet, row, columnCount++, entity[1], style);
             createCell(sheet, row, columnCount++, entity[2], style);
-            createCell(sheet, row, columnCount++, TimeUtil.toDDMMyyyy((Timestamp) entity[3]), style);
-            createCell(sheet, row, columnCount++, entity[4], style);
-            createCell(sheet, row, columnCount++, entity[5], style);
+            createCell(sheet, row, columnCount++, entity[3], style1);
+            createCell(sheet, row, columnCount++, TimeUtil.toDDMMyyyy((Timestamp) entity[4]), style1);
+            String sdt = String.valueOf(entity[5]);
+            createCell(sheet, row, columnCount++, sdt, style1);
             createCell(sheet, row, columnCount++, entity[6], style);
-            createCell(sheet, row, columnCount++, entity[7], style);
-            createCell(sheet, row, columnCount++, entity[9], style);
-            createCell(sheet, row, columnCount++, entity[10], style);
-            createCell(sheet, row, columnCount++, entity[11], style);
-            LoaiHopDongEntity loaihd = loaiHopDongRepository.Name((BigInteger) entity[12]);
-            createCell(sheet, row, columnCount++, loaihd.getTenHopDong(), style);
-            String baoHiem = loaihd.getBaoHiem() == 1 ? "Có" : "Không có";
-            createCell(sheet, row, columnCount++, baoHiem, style);
-            String trangThai = String.valueOf(entity[8]) == "true" ? "Hoạt động" : "Nghỉ việc";
-            createCell(sheet, row, columnCount++, trangThai, style);
+            createCell(sheet, row, columnCount++, entity[7], style1);
+            String cmt = String.valueOf(entity[8]);
+            createCell(sheet, row, columnCount++, cmt, style1);
+            createCell(sheet, row, columnCount++, entity[9], style1);
+            createCell(sheet, row, columnCount++, entity[10], style1);
+            if (hopDongEntity == null) {
+                createCell(sheet, row, columnCount++, " ", style);
+                createCell(sheet, row, columnCount++, " ", style);
+                createCell(sheet, row, columnCount++, " ", style);
+            } else {
+                for (Object[] userContract : UserContract) {
+                    createCell(sheet, row, columnCount++, userContract[0], style1);
+                    createCell(sheet, row, columnCount++, userContract[1], style1);
+                    String baoHiem = userContract[2] == "1"?"Có":"Không có";
+                    createCell(sheet, row, columnCount++, baoHiem, style1);
+                }
+            }
+            createCell(sheet, row, columnCount++, TimeUtil.toDDMMyyyy((Timestamp)entity[11]), style1);
         }
     }
 }
