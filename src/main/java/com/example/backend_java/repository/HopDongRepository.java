@@ -45,4 +45,7 @@ public interface HopDongRepository extends JpaRepository<HopDongEntity,Long> {
             "WHERE hop_dong.id_user = :id\n" +
             "AND hop_dong.status = 1")
     HopDongEntity find(BigInteger id);
+
+    @Query(nativeQuery = true,value = "SELECT * FROM `hop_dong` WHERE hop_dong.status = 1 AND  hop_dong.id_user =:id_user")
+    HopDongEntity findNguoidung(Long id_user);
 }

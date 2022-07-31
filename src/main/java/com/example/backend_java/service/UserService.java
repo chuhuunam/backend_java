@@ -1,9 +1,6 @@
 package com.example.backend_java.service;
 
-import com.example.backend_java.domain.request.PasswordRequest;
-import com.example.backend_java.domain.request.StatusRequest;
-import com.example.backend_java.domain.request.UserRequest;
-import com.example.backend_java.domain.request.updateDepRequest;
+import com.example.backend_java.domain.request.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +32,10 @@ public interface UserService {
     ResponseEntity<?> getList(HttpServletRequest request);
 
     ResponseEntity<?> statistical();
+
+    ResponseEntity<?> quit_job(HttpServletRequest request, NghiViecRequest nghiViecRequest, Long id);
+
+    ResponseEntity<?> getUserLeave(String keyword, Integer id_department, Integer id_position, Integer index, Integer size);
 
 //    void s(HttpServletRequest request) throws NoSuchAlgorithmException;
 }

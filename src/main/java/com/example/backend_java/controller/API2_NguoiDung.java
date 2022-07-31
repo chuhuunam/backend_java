@@ -1,10 +1,7 @@
 package com.example.backend_java.controller;
 
 import com.example.backend_java.constant.Constant;
-import com.example.backend_java.domain.request.PasswordRequest;
-import com.example.backend_java.domain.request.StatusRequest;
-import com.example.backend_java.domain.request.UserRequest;
-import com.example.backend_java.domain.request.updateDepRequest;
+import com.example.backend_java.domain.request.*;
 import com.example.backend_java.domain.response.ErrResponse;
 import com.example.backend_java.service.UserService;
 import com.google.common.base.Strings;
@@ -18,7 +15,6 @@ import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 
 @RestController
 @RequestMapping("/api/user")
@@ -31,17 +27,48 @@ public class API2_NguoiDung extends _BaseController {
         this.userService = userService;
     }
 
-//    @GetMapping("/fake")
+    //    @GetMapping("/fake")
 //    public void a(HttpServletRequest request) throws NoSuchAlgorithmException {
 //        userService.s(request);
 //    }
+    @PostMapping("/leave/{id}")
+    @ApiOperation(value = "Cho nhân viên nghỉ việc")
+    public ResponseEntity<?> quit_job(HttpServletRequest request,
+                                      @RequestBody NghiViecRequest nghiViecRequest, @PathVariable(value = "id") Long id){
+        if (request == null) {
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Vui lòng nhập đầy đủ thông tin"));
+        } else {
+            logger.info("<=create nhân viên resp: {}", "ok");
+            return userService.quit_job(request, nghiViecRequest,id);
+        }
+    }
+
 
     @GetMapping("/statistical")
     @ApiOperation(value = "Thống kê nhân viên")
-    public ResponseEntity<?> statistical(){
+    public ResponseEntity<?> statistical() {
         return userService.statistical();
     }
-    @GetMapping("/page")
+
+    @GetMapping("leave/page")
+    @ApiOperation(value = "Danh sách nhân viên nghỉ việc phân trang")
+    public ResponseEntity<?> leave(
+                                  @RequestParam(required = false, name = "page_index")
+                                  @ApiParam(value = "Trang cần lấy (tính từ 1). Mặc định 1") Integer pageIndex,
+                                  @RequestParam(required = false, name = "page_size")
+                                  @ApiParam(value = "Số bản ghi cho 1 trang (nhỏ nhất 1; lớn nhất 50). Mặc định 10") Integer pageSize,
+                                  @RequestParam(required = false, name = "keyword")
+                                  @ApiParam(value = "Nhập mã nhân viên, tên, cmt,...") String keyword,
+                                  @RequestParam(required = false, name = "id_department")
+                                  @ApiParam(value = "Nhập id_phong_ban") Integer id_department,
+                                  @RequestParam(required = false, name = "id_position")
+                                  @ApiParam(value = "Nhập idChucVu") Integer id_position){
+        Integer index = validPageIndex(pageIndex);
+        Integer size = validPageSize(pageSize);
+        return userService.getUserLeave(keyword, id_department, id_position, index, size);
+    }
+
+    @GetMapping("page")
     @ApiOperation(value = "Danh sách nhân viên phân trang")
     public ResponseEntity<?> list(HttpServletRequest request,
                                   @RequestParam(required = false, name = "page_index")
@@ -60,8 +87,9 @@ public class API2_NguoiDung extends _BaseController {
                                   @ApiParam(value = "Nhập giới tính") String sex) {
         Integer index = validPageIndex(pageIndex);
         Integer size = validPageSize(pageSize);
-        return userService.getPageUser(request, keyword, id_department, id_position,id_type_contract,sex, index, size);
+        return userService.getPageUser(request, keyword, id_department, id_position, id_type_contract, sex, index, size);
     }
+
 
     @GetMapping("/{id}")
     @ApiOperation(value = "Chi tiết nhân viên")

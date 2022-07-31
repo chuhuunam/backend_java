@@ -13,6 +13,8 @@ public class LoaiHopDongRequest {
     @ApiModelProperty(notes = "Bảo hiểm", example = "0 là không,1 là có")
     private Integer insurance;
     private boolean status;
+    @ApiModelProperty(notes = "tính chất lao động", example = "Chính thức, Thử việc, Học việc")
+    private String labor_nature;
 
     public ResponseEntity<?> validate() {
         if (Strings.isNullOrEmpty(name_contract)) {
@@ -20,6 +22,9 @@ public class LoaiHopDongRequest {
         }
         if (insurance < 0 && insurance == null) {
             return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chưa nhập BHXH "));
+        }
+        if (Strings.isNullOrEmpty(labor_nature)) {
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chưa nhập tính chất lao động"));
         }
         return null;
     }

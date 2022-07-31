@@ -111,6 +111,7 @@ public class HopDongServiceImpl implements HopDongService {
                 entity.setNgayHieuLuc(hopdong.getEffective_date());
                 entity.setNgayKetThuc(hopdong.getEnd_date());
                 entity.setLuong(hopdong.getSalary());
+                entity.setTinhChatLaoDong(loaihopdong.getTinhChatLaoDong());
                 entity.setStatus(true);
                 entity.setMoTa(hopdong.getDescribe());
                 entity.setNguoiTao(userEntity.getHoTen());
@@ -139,6 +140,7 @@ public class HopDongServiceImpl implements HopDongService {
             entity.setNgayKy(req.getSign_day());
             entity.setNgayHieuLuc(req.getEffective_date());
             entity.setNgayKetThuc(req.getEnd_date());
+            entity.setTinhChatLaoDong(loaihopdong.getTinhChatLaoDong());
             entity.setLuong(req.getSalary());
             entity.setMoTa(req.getDescribe());
             entity.setStatus(req.isStatus());

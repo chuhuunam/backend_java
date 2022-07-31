@@ -56,6 +56,7 @@ public class LoaiHopDongServiceImpl implements LoaiHopDongService {
             LoaiHopDongEntity entity = new LoaiHopDongEntity();
             entity.setTenHopDong(req.getName_contract());
             entity.setBaoHiem(req.getInsurance());
+            entity.setTinhChatLaoDong(req.getLabor_nature());
             entity.setStatus(true);
             entity.setNguoiTao(userEntity.getHoTen());
             loaiHopDongRepository.save(entity);
@@ -77,6 +78,7 @@ public class LoaiHopDongServiceImpl implements LoaiHopDongService {
             entity.setBaoHiem(req.getInsurance());
             entity.setStatus(req.isStatus());
             entity.setNguoiSua(userEntity.getHoTen());
+            entity.setTinhChatLaoDong(req.getLabor_nature());
             loaiHopDongRepository.save(entity);
             return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Sửa loại hợp đồng thành công"));
         } catch (Throwable ex) {

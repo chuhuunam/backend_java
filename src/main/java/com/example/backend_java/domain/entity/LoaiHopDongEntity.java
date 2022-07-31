@@ -19,6 +19,7 @@ public class LoaiHopDongEntity {
 
     private String tenHopDong;
     private Integer baoHiem;
+    private String tinhChatLaoDong;
     private boolean status;
     @OneToMany(mappedBy = "loaihopdong", cascade = CascadeType.ALL)
     @JsonIgnore

@@ -35,6 +35,10 @@ public class UserEntity {
 
     private String diaChi;
 
+    private String lyDoNghi;
+
+    private Date ngayNghi;
+
     private String cmt;
 
     private Date ngaySinh;

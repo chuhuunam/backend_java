@@ -3,10 +3,7 @@ package com.example.backend_java.service.Impl;
 import com.example.backend_java.constant.Constant;
 import com.example.backend_java.domain.dto.*;
 import com.example.backend_java.domain.entity.*;
-import com.example.backend_java.domain.request.PasswordRequest;
-import com.example.backend_java.domain.request.StatusRequest;
-import com.example.backend_java.domain.request.UserRequest;
-import com.example.backend_java.domain.request.updateDepRequest;
+import com.example.backend_java.domain.request.*;
 import com.example.backend_java.domain.response.ErrResponse;
 import com.example.backend_java.domain.response.PageResponse;
 import com.example.backend_java.domain.response.ResponseResponse;
@@ -72,12 +69,12 @@ public class UserServiceImpl implements UserService {
         try {
             Integer offset = (index - 1) * size;
             List<Object[]> page;
-            if (idLoaiHopDong == null){
-                page = userRepository.getUser(keyword, idPhongBan, idChucVu,sex, offset, size);
-                Long total = userRepository.TotalUser(keyword, idPhongBan, idChucVu,sex);
+            if (idLoaiHopDong == null) {
+                page = userRepository.getUser(keyword, idPhongBan, idChucVu, sex, offset, size);
+                Long total = userRepository.TotalUser(keyword, idPhongBan, idChucVu, sex);
                 ArrayList<UserDto> list = new ArrayList<>();
                 for (Object[] entity : page) {
-                    List<Object[]> UserContract = loaiHopDongRepository.UserContract((BigInteger) entity[0],idLoaiHopDong);
+                    List<Object[]> UserContract = loaiHopDongRepository.UserContract((BigInteger) entity[0], idLoaiHopDong);
                     HopDongEntity hopDongEntity = hopDongRepository.find((BigInteger) entity[0]);
                     if (hopDongEntity == null) {
                         list.add(new UserDto(entity[0], entity[1], entity[2], entity[3], entity[4], entity[5], entity[6],
@@ -93,12 +90,12 @@ public class UserServiceImpl implements UserService {
                 }
                 PageResponse<HopDongEntity> data = new PageResponse(index, size, total, list);
                 return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, data));
-            }else {
-                page = userRepository.getUser1(keyword, idPhongBan, idChucVu,idLoaiHopDong,sex, offset, size);
-                Long total = userRepository.TotalUser1(keyword, idPhongBan, idChucVu,idLoaiHopDong,sex);
+            } else {
+                page = userRepository.getUser1(keyword, idPhongBan, idChucVu, idLoaiHopDong, sex, offset, size);
+                Long total = userRepository.TotalUser1(keyword, idPhongBan, idChucVu, idLoaiHopDong, sex);
                 ArrayList<UserDto> list = new ArrayList<>();
                 for (Object[] entity : page) {
-                    List<Object[]> UserContract = loaiHopDongRepository.UserContract((BigInteger) entity[0],idLoaiHopDong);
+                    List<Object[]> UserContract = loaiHopDongRepository.UserContract((BigInteger) entity[0], idLoaiHopDong);
                     HopDongEntity hopDongEntity = hopDongRepository.find((BigInteger) entity[0]);
                     if (hopDongEntity == null) {
                         list.add(new UserDto(entity[0], entity[1], entity[2], entity[3], entity[4], entity[5], entity[6],
@@ -112,7 +109,7 @@ public class UserServiceImpl implements UserService {
                         }
                     }
                 }
-                PageResponse<HopDongEntity> data = new PageResponse(index, size,total, list);
+                PageResponse<HopDongEntity> data = new PageResponse(index, size, total, list);
                 return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, data));
             }
 //      Set<RoleEntity> en = userEntity.getRoles();for (RoleEntity s : en) {if (s.getMaQuyen().equals("Admin")) {} else {
@@ -424,16 +421,79 @@ public class UserServiceImpl implements UserService {
         List<Object[]> pieChartDto = userRepository.pie();
         ArrayList<PieChartDto> list = new ArrayList<>();
         for (Object[] entity : pieChartDto) {
-            list.add(new PieChartDto((BigInteger) entity[0],entity[1]));
+            list.add(new PieChartDto((BigInteger) entity[0], entity[1]));
         }
         List<Object[]> objects = userRepository.contractChart();
         ArrayList<ContractChartDto> listContract = new ArrayList<>();
         for (Object[] entity : objects) {
-            listContract.add(new ContractChartDto((BigInteger) entity[0],entity[1]));
+            listContract.add(new ContractChartDto((BigInteger) entity[0], entity[1]));
         }
         userStatisticDto.setPieChart(list);
         userStatisticDto.setContractChart(listContract);
         return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, userStatisticDto));
+    }
+
+    @Override
+    public ResponseEntity<?> quit_job(HttpServletRequest request, NghiViecRequest nghiViecRequest, Long id) {
+        try {
+            UserEntity userEntity = jwtUtils.getUserEntity(request);
+            UserEntity entity = userRepository.findById(id).orElse(null);
+            if (entity == null) {
+                return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
+            }
+            HopDongEntity hopDongEntity = hopDongRepository.findNguoidung(id);
+            if (hopDongEntity != null){
+                hopDongEntity.setStatus(false);
+                hopDongRepository.save(hopDongEntity);
+            }
+            HopDongEntity dongEntity = new HopDongEntity();
+            Integer stt = hopDongRepository.getId();
+            if (stt == null) {
+                stt = 1;
+            } else {
+                stt = stt + 1;
+            }
+            if (nghiViecRequest.getCheck() == 0) {
+                LoaiHopDongEntity loaihopdong = loaiHopDongRepository.findById(5L).get();
+                dongEntity.setTinhChatLaoDong(loaihopdong.getTinhChatLaoDong());
+                dongEntity.setLoaihopdong(loaihopdong);
+            } else {
+                LoaiHopDongEntity loaihopdong = loaiHopDongRepository.findById(6L).get();
+                dongEntity.setTinhChatLaoDong(loaihopdong.getTinhChatLaoDong());
+                dongEntity.setLoaihopdong(loaihopdong);
+            }
+            UserEntity user = userRepository.findById(id).get();
+            dongEntity.setNguoidung(user);
+            dongEntity.setMaHopDong("HD_" + stt);
+            dongEntity.setNgayKy(new Timestamp(System.currentTimeMillis()));
+            dongEntity.setNgayHieuLuc(new Timestamp(System.currentTimeMillis()));
+            dongEntity.setStatus(true);
+            dongEntity.setMoTa("Nhân viên bị sa thải");
+            dongEntity.setNguoiTao(userEntity.getHoTen());
+            hopDongRepository.save(dongEntity);
+            entity.setNgayNghi(new Timestamp(System.currentTimeMillis()));
+            entity.setLyDoNghi(nghiViecRequest.getReason_leave());
+            entity.setStatus(false);
+            entity.setNguoiSua(userEntity.getHoTen());
+            userRepository.save(entity);
+            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Cho nhân viên nghỉ thành công"));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Cho nhân viên nghỉ thất bại"));
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> getUserLeave(String keyword, Integer id_department, Integer id_position, Integer index, Integer size) {
+        Integer offset = (index - 1) * size;
+        List<Object[]> leave = userRepository.nvNghiViec(keyword,id_department,id_position,offset,size);
+        Long total = userRepository.Total(keyword,id_department,id_position);
+        ArrayList<UserLeaveDto> userLeaveDtos = new ArrayList<>();
+        for (Object[] entity : leave) {
+            userLeaveDtos.add(new UserLeaveDto(entity[0], entity[1],entity[2], entity[3],entity[4], entity[5],entity[6],entity[7]));
+        }
+
+        PageResponse<HopDongEntity> data = new PageResponse(index, size, total, userLeaveDtos);
+        return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, data));
     }
 
 //    @Override
@@ -538,11 +598,11 @@ public class UserServiceImpl implements UserService {
                 for (Object[] userContract : UserContract) {
                     createCell(sheet, row, columnCount++, userContract[0], style1);
                     createCell(sheet, row, columnCount++, userContract[1], style1);
-                    String baoHiem = userContract[2] == "1"?"Có":"Không có";
+                    String baoHiem = userContract[2] == "1" ? "Có" : "Không có";
                     createCell(sheet, row, columnCount++, baoHiem, style1);
                 }
             }
-            createCell(sheet, row, columnCount++, TimeUtil.toDDMMyyyy((Timestamp)entity[11]), style1);
+            createCell(sheet, row, columnCount++, TimeUtil.toDDMMyyyy((Timestamp) entity[11]), style1);
         }
     }
 }

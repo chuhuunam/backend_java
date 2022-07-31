@@ -128,5 +128,27 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
             "    and hop_dong.id_loai_hop_dong != 3")
     List<Object[]> contractChart();
 
+    @Query(nativeQuery = true,value = "SELECT user.id,tai_khoan,ho_ten,phong_ban.ten_phong_ban,chuc_vu.ten_chuc_vu,ngay_nghi,ly_do_nghi,hop_dong.tinh_chat_lao_dong FROM user\n" +
+            "JOIN phong_ban ON phong_ban.id = user.id_phong_ban\n" +
+            "JOIN chuc_vu ON chuc_vu.id = user.id_chuc_vu\n" +
+            "JOIN hop_dong ON hop_dong.id_user = user.id\n" +
+            "WHERE user.status = 0\n" +
+            "AND (:keyword is null or CONCAT(user.tai_khoan,'',user.ho_ten,'',user.ly_do_nghi,'') LIKE  %:keyword% )\n" +
+            "AND (:idPhongBan is null or user.id_phong_ban = :idPhongBan)\n" +
+            "AND (:idChucVu is null or user.id_chuc_vu = :idChucVu)\n" +
+            "and hop_dong.status = 1\n" +
+            "ORDER BY `user`.`id` DESC\n" +
+            "LIMIT :limit,:offset")
+    List<Object[]> nvNghiViec(String keyword, Integer idPhongBan, Integer idChucVu,int limit, int offset);
 
+    @Query(nativeQuery = true,value = "SELECT COUNT(*) FROM user\n" +
+            "JOIN phong_ban ON phong_ban.id = user.id_phong_ban\n" +
+            "JOIN chuc_vu ON chuc_vu.id = user.id_chuc_vu\n" +
+            "JOIN hop_dong ON hop_dong.id_user = user.id\n" +
+            "WHERE user.status = 0\n" +
+            "AND (:keyword is null or CONCAT(user.tai_khoan,'',user.ho_ten,'',user.ly_do_nghi,'') LIKE  %:keyword% )\n" +
+            "AND (:idPhongBan is null or user.id_phong_ban = :idPhongBan)\n" +
+            "AND (:idChucVu is null or user.id_chuc_vu = :idChucVu)\n" +
+            "and hop_dong.status = 1")
+    Long Total(String keyword, Integer idPhongBan, Integer idChucVu);
 }

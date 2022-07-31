@@ -9,6 +9,7 @@ public class LoaiHopDongDto {
     private Long id;
     private String name_contract;
     private Integer insurance;
+    private String labor_nature;
     private boolean status;
     protected String create_at;
     protected String update_at;
@@ -19,6 +20,7 @@ public class LoaiHopDongDto {
         this.id = entity.getId();
         this.name_contract = entity.getTenHopDong();
         this.insurance=entity.getBaoHiem();
+        this.labor_nature = entity.getTinhChatLaoDong();
         this.status = entity.isStatus();
         this.create_at = TimeUtil.toHHmmDDMMyyyy(entity.getNgayTao());
         this.update_at = TimeUtil.toHHmmDDMMyyyy(entity.getNgaySua());

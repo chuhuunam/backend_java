@@ -14,8 +14,6 @@ public class HopDongRequest {
     private Long id_user;
     private Integer id_type_contract;
     private Integer id_position;
-    @ApiModelProperty(notes = "tính chất lao động", example = "Chính thức, Thử việc, Học việc")
-    private String labor_nature;
     private Float salary;
     private Date sign_day;
     private Date effective_date;
@@ -26,9 +24,6 @@ public class HopDongRequest {
     public ResponseEntity<?> validate() {
         if (id_user < 0 && id_user == null) {
             return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chưa nhập id_user "));
-        }
-        if (Strings.isNullOrEmpty(labor_nature)) {
-            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chưa nhập tính chất lao động"));
         }
         if (id_type_contract < 0 && id_type_contract == null) {
             return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chưa nhập id_loai_hop_dong "));
