@@ -301,23 +301,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<?> updateStatus(HttpServletRequest request, StatusRequest status, Long id) {
-        try {
-            UserEntity userEntity = jwtUtils.getUserEntity(request);
-            UserEntity entity = userRepository.findById(id).orElse(null);
-            if (entity == null) {
-                return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
-            }
-            entity.setStatus(status.isStatus());
-            entity.setNguoiSua(userEntity.getHoTen());
-            userRepository.save(entity);
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Sửa trạng thái nhân viên thành công"));
-        } catch (Exception e) {
-            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Sửa trạng thái nhân viên thất bại"));
-        }
-    }
-
-    @Override
     public ResponseEntity<?> updateDepartment(HttpServletRequest request, updateDepRequest department, Long id) {
         try {
             UserEntity userEntity = jwtUtils.getUserEntity(request);

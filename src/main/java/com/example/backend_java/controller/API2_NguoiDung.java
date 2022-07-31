@@ -161,19 +161,6 @@ public class API2_NguoiDung extends _BaseController {
         }
     }
 
-    @PutMapping("updateStatus/{id}")
-    @ApiOperation(value = "Sửa trạng thái người dùng")
-    public ResponseEntity<?> updateStatus(HttpServletRequest request,
-                                          @RequestBody StatusRequest status,
-                                          @PathVariable(value = "id") Long id) {
-        logger.info("=> update pass người dùng");
-        if (request == null || id < 0) {
-            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Vui lòng nhập đầy đủ thông tin"));
-        } else {
-            return userService.updateStatus(request, status, id);
-        }
-    }
-
     @PutMapping("updateDepartment/{id}")
     @ApiOperation(value = "Chuyển phòng ban người dùng")
     public ResponseEntity<?> updateDepartment(HttpServletRequest request,

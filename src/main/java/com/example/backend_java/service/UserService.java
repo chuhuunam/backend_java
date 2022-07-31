@@ -21,8 +21,6 @@ public interface UserService {
 
     ResponseEntity<?> updatePassword(HttpServletRequest request, PasswordRequest password, Long id);
 
-    ResponseEntity<?> updateStatus(HttpServletRequest request, StatusRequest status, Long id);
-
     ResponseEntity<?> updateDepartment(HttpServletRequest request, updateDepRequest department, Long id);
 
     void exportFile(HttpServletResponse response) throws IOException;
