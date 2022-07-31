@@ -161,19 +161,6 @@ public class API2_NguoiDung extends _BaseController {
         }
     }
 
-    @PutMapping("updateDepartment/{id}")
-    @ApiOperation(value = "Chuyển phòng ban người dùng")
-    public ResponseEntity<?> updateDepartment(HttpServletRequest request,
-                                              @RequestBody updateDepRequest department,
-                                              @PathVariable(value = "id") Long id) {
-        logger.info("=> update pass người dùng");
-        if (request == null || id < 0) {
-            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Vui lòng nhập đầy đủ thông tin"));
-        } else {
-            return userService.updateDepartment(request, department, id);
-        }
-    }
-
     @GetMapping("/export_file")
     @ApiOperation(value = "Xuất file")
     public void exportFile(HttpServletResponse response) throws IOException {

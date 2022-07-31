@@ -300,24 +300,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    @Override
-    public ResponseEntity<?> updateDepartment(HttpServletRequest request, updateDepRequest department, Long id) {
-        try {
-            UserEntity userEntity = jwtUtils.getUserEntity(request);
-            UserEntity entity = userRepository.findById(id).orElse(null);
-            if (entity == null) {
-                return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Không thấy id"));
-            }
-            PhongBanEntity dep = phongBanRepository.findById(Long.valueOf(department.getId_department())).get();
-            entity.setDepartments(dep);
-            entity.setNguoiSua(userEntity.getHoTen());
-            userRepository.save(entity);
-            return ResponseEntity.ok(new ResponseResponse<>(Constant.SUCCESS, Constant.MGS_SUCCESS, "Chuyển phòng ban nhân viên thành công"));
-        } catch (Exception e) {
-            return ResponseEntity.ok(new ErrResponse<>(Constant.FAILURE, Constant.MGS_FAILURE, "Chuyển phòng ban nhân viên thất bại"));
-        }
-    }
-
     protected void createCell(XSSFSheet sheet, Row row, int columnCount, Object value, CellStyle style) {
         sheet.autoSizeColumn(columnCount);
         Cell cell = row.createCell(columnCount);
